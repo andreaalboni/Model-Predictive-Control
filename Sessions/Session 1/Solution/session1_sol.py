@@ -211,6 +211,8 @@ def exercise4():
     print(" Setting parameter values.")
     A, B, Q, R = setup()
 
+    print(A.shape, B.shape, Q.shape, R.shape)
+
     Pf = Q 
     x0 = 10 * np.ones(2)
     N = 5
@@ -219,7 +221,7 @@ def exercise4():
 
         print(f" Running recursion for N = {N}.")
         _, gains = riccati_recursion(A, B, R, Q, Pf, N)
-        
+        print(f"  Gains: {gains[0]}")
         plot_ex4(x0, A, B, Q, R, gains, sim_time=30)
 
 def exercise5():
