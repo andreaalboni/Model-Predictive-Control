@@ -48,14 +48,14 @@ def setup():
     return A, B, Q, R
 
 
+
 def ex2():
     A, B, Q, R = setup()
 
-    Hx = np.array(np.eye(2), -1*np.eye(2))
-    print(Hx)
-    #H = 
-    h = np.array([1, 25, 120, 50, 10, 20])
-    X = Polyhedron.from_inequalities(H, h)
+    Hx = np.vstack((np.eye(2), -np.eye(2)))
+    h = np.array([1, 25, 120, 50])
+    X = Polyhedron.from_inequalities(Hx, h)
+    plot_polytope(X)
 
 
 def main():
