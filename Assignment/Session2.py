@@ -134,8 +134,8 @@ def Assigment24():
     initial_states_feasible1 = []
 
     # Generate grid of initial states
-    p0_range = np.linspace(-10, 1, 40)
-    v0_range = np.linspace(0, 25, 40)
+    p0_range = np.linspace(-10, 1, 30)
+    v0_range = np.linspace(0, 25, 30)
     p0, v0 = np.meshgrid(p0_range, v0_range)
     initial_states = np.vstack([p0.ravel(), v0.ravel()]).T
 
@@ -178,7 +178,7 @@ def Assigment24():
             plt.scatter(feasible_points[:, 0], feasible_points[:, 1], color='green', marker='o', s=10, label='Feasible')
         if non_feasible_points.size > 0:
             plt.scatter(non_feasible_points[:, 0], non_feasible_points[:, 1], color='red', marker='o', s=10, label='Non-Feasible')
-        plt.plot(break_distances, np.linspace(0, 25, 1600), color='cyan', linewidth=2, label='Constraint\'s boundary')
+        plt.plot(break_distances, np.linspace(0, 25, 900), color='cyan', linewidth=2, label='Constraint\'s boundary')
         plt.title("Initial feasibility analysis for MPC of horizon {}".format(N))
         plt.xlabel("Position ($p_0$)")
         plt.ylabel("Velocity ($v_0$)")

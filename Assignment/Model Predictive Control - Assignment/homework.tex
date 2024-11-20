@@ -70,7 +70,10 @@ Before submitting your final report, make sure that you verify your solutions fr
 \end{assignment}
 
 \begin{flushleft}
-	TO FIX.
+Zio pera, grafico sembra giusto.  
+uno converge dal basso perchè considera solo il costo per fare gli N (horizon) steps dell'mpc. non considera tutto ciò che avverrà successivamente all'horizon.
+l'altro converge dall'alto perchè considera il costo di tutti gli steps, infatti per horizon < 4 sono instabili -> costo infinito.
+linea costante perchè costo infinito è quello.
 \end{flushleft}
 
 
@@ -193,9 +196,13 @@ Therefore, the constraint that guarantees that there will always exist a control
 	\textbf{Remark.} You only have to check the initial feasibility of the MPC problem, not recursive feasibility.
 \end{assignment}
 
+\begin{flushleft}
 TO FIX.
-FIX CODE TOO.
-Test git.
+CHECK CODE TOO.
+ha detto che grafico sembra ok, ha consigliato di non discretizzare il confine (cosa che già non faccio, quindi indagare), gli sembra strano che alcuni punti sotto il nostro constraint risultino comunque rossi.
+per il tempo di esecuzione ha consigliato di ridurre la griglia di discretizzazione (from 40x40 to 30x30).
+\end{flushleft}
+
 
 
 \newpage
