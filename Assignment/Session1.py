@@ -202,7 +202,7 @@ def Assignment12():
     plt.scatter(horizons, Vn, color="blue", marker="^")
     line2, = plt.plot(horizons, Vinf, color="violet", linewidth=1, label="$V_{\infty}$")
     plt.scatter(horizons, Vinf, color="purple", marker=".")
-    line3, = plt.plot(horizons, Vhat, color="lightgreen", linewidth=1, label="$\hat{V}_N}$")
+    line3, = plt.plot(horizons, Vhat, color="lightgreen", linewidth=1, label="$\hat{V}_N$")
     plt.scatter(horizons, Vhat, color="darkgreen", marker="x")
     plt.legend(handles=[line1, line2, line3])
     plt.title("Assignment 1.2")

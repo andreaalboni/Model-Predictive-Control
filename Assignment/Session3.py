@@ -71,6 +71,54 @@ def riccati_recursion(A: np.ndarray, B: np.ndarray, R: np.ndarray, Q: np.ndarray
 
     return P[::-1], K[::-1]  # Reverse the order for easier indexing later.
 
+def alpha(H: np.ndarray, h: np.ndarray, shape_matrix: np.ndarray) -> float:
+    alphas = []
+    for i in range(H.shape[0]):
+        h_i = H[i,:]
+        alpha = h[i]**2/(h_i @ la.inv(shape_matrix) @ h_i.T)
+        alphas.append(alpha)
+    return min(alphas)
+
+def method2(A: np.ndarray, B: np.ndarray, Hx: np.ndarray, hx: np.ndarray, Hu: np.ndarray, hu: np.ndarray):
+    #A = np.array([[1, 2], [3, 4]])
+    #B = np.array([[1], [0]])
+    #Hx = np.array([[1, 0], [0, 1], [-1, 0], [0, -1]])
+    #hx = np.array([1, 1, 1, 1])
+    #Hu = np.array([[1], [-1]])
+    #hu = np.array([1, 1])
+
+    # Decision variables
+    n = A.shape[0]
+    m = B.shape[1]
+    P = cp.Variable((n, n), PSD=True)  # Positive definite matrix
+    K = cp.Variable((m, n))            # Feedback gain
+
+    # Objective: Maximize volume of ellipsoid
+    objective = cp.Minimize(-cp.log_det(P))
+
+    # Constraints
+    constraints = []
+
+    # Positive invariance: (A + BK)^T P (A + BK) - P <= 0
+    constraints.append((A + B @ K).T @ P @ (A + B @ K) - P << 0)
+
+    # State constraints: Hx.T P^-1 Hx <= hx^2
+    for i in range(Hx.shape[0]):
+        constraints.append(Hx[i, :] @ cp.inv_pos(P) @ Hx[i, :].T <= hx[i]**2)
+
+    # Input constraints: Hu.T K P^-1 K^T Hu <= hu^2
+    for i in range(Hu.shape[0]):
+        constraints.append(Hu[i, :].T @ cp.inv_pos(P) @ Hu[i, :] <= hu[i]**2)
+
+    problem = cp.Problem(objective, constraints)
+    problem.solve()
+
+    # Output results
+    print("Optimal P:", P.value)
+    print("Optimal K:", K.value)
+
+    return P.value, K.value
+
 
 
 def Assignment32():
@@ -81,7 +129,7 @@ def Assignment32():
     X = Polyhedron.from_inequalities(Hx, hx)
     #plot_polytope(X, color='cyan', label="X")
 
-    P, K = riccati_recursion(A, B, R, Q, Q, 5)
+    P, K = riccati_recursion(A, B, R, Q, Q, 10)
     Hu = np.vstack((K[0], -K[0]))
     hu = np.array([10, 20])
 
@@ -90,16 +138,15 @@ def Assignment32():
     Xk = Polyhedron.from_inequalities(H, h)
     plot_polytope(Xk, color='b', label="$X_k$")
 
-    print(Xk.vertices())
-
+    # Method 1: Using the ellipsoid
     shape_matrix = Q
     center = np.array([0, 0])
-    ellipsoid = Ellipsoid(shape_matrix, center)
+    alpha_ellipsoid = alpha(H, h, shape_matrix)
+    ellipsoid = Ellipsoid(shape_matrix/alpha_ellipsoid, center)
     plot_ellipsoid(ellipsoid, color='violet', label="$\epsilon$")
 
-    alpha = 2 # to be computed
-    ellipsoid_alpha = ellipsoid.__rmul__(alpha)
-    plot_ellipsoid(ellipsoid_alpha, color='violet', label="$\epsilon_{\alpha}$")
+    # Method 2: Solving a convex optimization problem
+    P, K = method2(A, B, Hx, hx, Hu, hu)
 
     plt.legend()
     plt.xlabel("$x_1$")
