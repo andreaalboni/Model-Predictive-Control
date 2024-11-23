@@ -163,7 +163,7 @@ def finite_horizon_cost(x0: np.ndarray, A: np.ndarray, B: np.ndarray, K: np.ndar
     
     return cost
 
-def Assigment11():
+def Assignment11():
     A, B, Q, R = setup()
     x0 = 10 * np.ones(2)
     Pf = Q
@@ -178,7 +178,7 @@ def Assigment11():
 
     print("Kinf: ", Kinf)
 
-def Assigment12():
+def Assignment12():
     ## -------------------- Value Function vs. N -------------------- ##
     A, B, Q, R = setup()
     x0 = 10 * np.ones(2)
@@ -213,8 +213,8 @@ def Assigment12():
 
 
 def main():
-    #Assigment11()
-    Assigment12()
+    #Assignment11()
+    Assignment12()
 
 if __name__ == "__main__": 
     main()

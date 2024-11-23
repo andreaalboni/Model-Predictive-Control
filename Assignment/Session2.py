@@ -122,7 +122,7 @@ def check_feasibility(initial_state, horizon, pmin, pmax, umin, umax, vmin, vmax
 
     return feasible
 
-def Assigment24():
+def Assignment24():
     pmin = -150
     pmax = 1.0
     umin = -5.0
@@ -191,7 +191,7 @@ def Assigment24():
 
 
 def main():
-    Assigment24()
+    Assignment24()
 
 if __name__ == "__main__": 
     main()

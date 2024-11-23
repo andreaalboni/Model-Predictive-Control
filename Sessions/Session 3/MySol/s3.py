@@ -1,7 +1,7 @@
 import numpy as np 
 import numpy.linalg as la
 import matplotlib.pyplot as plt
-from typing import Tuple , Callable
+from typing import Tuple, Callable
 from rcracers.utils.geometry import Polyhedron, plot_polytope
  
 
@@ -68,24 +68,29 @@ def riccati_recursion(A: np.ndarray, B: np.ndarray, R: np.ndarray, Q: np.ndarray
 
     return P[::-1], K[::-1]  # Reverse the order for easier indexing later.
 
-def invariant_set(A: np.ndarray, B: np.ndarray, K: np.ndarray, H: np.ndarray, h: np.ndarray):
-    Omega=Polyhedron.from_inequalities(H, h)
-    Hu = np.vstack((K[0], -K[0]))
-    hu = np.array([10, 20])
-    U = Polyhedron.from_inequalities(Hu, hu)
+def invariant_set(X: Polyhedron, A: np.ndarray, B: np.ndarray, K: np.ndarray, H: np.ndarray, h: np.ndarray):
+    tolerance = 1e-6
+    terminal_set = X
 
-    print((H@A).shape)
-    print((U.H@B).shape)
+    plot_polytope(terminal_set, color='r')
 
-    H_pre = np.vstack((H@A, U.H@B))
-    h_pre = np.vstack((Omega.h, U.h))
-    Pre_omega = Polyhedron.from_inequalities(H_pre,h_pre)
-    for i in range(100):
-        Omega_new = Omega.intersect(Pre_omega)
-        if Omega_new == Omega:
+    while True:
+        # Pre-set computation: Ensure Ax + BKx in terminal_set and Kx in U
+        Ax = A @ terminal_set.vertices().T
+        print(Ax)
+        Bu = B @ (K @ terminal_set.vertices().T)
+        print(Bu)
+
+        plot_polytope(Polyhedron.from_inequalities(H @ (K @ Ax + Bu), h), color='b')
+        plt.show()
+
+        next_set = terminal_set.intersect(Polyhedron.from_inequalities(H @ (K @ Ax + Bu), h))
+        
+        # Check for convergence
+        if np.linalg.norm(terminal_set.vertices() - next_set.vertices()) < tolerance:
             break
-        Omega = Omega_new
-    return Omega
+        
+        terminal_set = next_set
 
 
 def ex2():
@@ -94,7 +99,7 @@ def ex2():
     Hx = np.vstack((np.eye(2), -np.eye(2)))
     h = np.array([1, 25, 120, 50])
     X = Polyhedron.from_inequalities(Hx, h)
-    plot_polytope(X)
+    #plot_polytope(X)
 
 def ex3():
     A, B, Q, R = setup()
@@ -107,8 +112,11 @@ def ex3():
     X = Polyhedron.from_inequalities(H, h)
     plot_polytope(X, color='b')
     ex2()
-    Xinv = invariant_set(A, B, K[0], H, h)
-    plot_polytope(Xinv, color='g')
+    Xinv = invariant_set(X, A, B, K[0], H, h)
+    #plot_polytope(Xinv, color='g')
+    plt.legend(["X", "U", "Xinv"])
+    plt.xlabel("$x_1$")
+    plt.ylabel("$x_2$")
     plt.show()
 
 
