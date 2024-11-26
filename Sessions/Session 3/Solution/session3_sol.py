@@ -128,7 +128,6 @@ def control_invariant_set(problem: Problem, *, max_it: int=50) -> InvSetResults:
     return result
 
 
-
 def build_input_set(problem: Problem, K: Matrix) -> Polyhedron:
     """Build a polyhedral set that describes all states that yield a feasible control action 
     when applying the controller ``u = Kx``.  That is, 

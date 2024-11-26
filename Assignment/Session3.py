@@ -6,8 +6,9 @@ from typing import Tuple , Callable
 from scipy.linalg import solve_discrete_are
 from rcracers.utils.geometry import Polyhedron, plot_polytope
 from rcracers.utils.geometry import Ellipsoid, plot_ellipsoid
-
  
+
+
 def get_dynamics_continuous() -> Tuple[np.ndarray]: 
     """Get the continuous-time dynamics represented as 
     
@@ -80,36 +81,28 @@ def alpha(H: np.ndarray, h: np.ndarray, shape_matrix: np.ndarray) -> float:
     return min(alphas)
 
 def method2(A: np.ndarray, B: np.ndarray, Hx: np.ndarray, hx: np.ndarray, Hu: np.ndarray, hu: np.ndarray):
-    #A = np.array([[1, 2], [3, 4]])
-    #B = np.array([[1], [0]])
-    #Hx = np.array([[1, 0], [0, 1], [-1, 0], [0, -1]])
-    #hx = np.array([1, 1, 1, 1])
-    #Hu = np.array([[1], [-1]])
-    #hu = np.array([1, 1])
+    # Dimensions
+    n = A.shape[0]  # State dimension
+    m = B.shape[1]  # Input dimension
 
     # Decision variables
-    n = A.shape[0]
-    m = B.shape[1]
     P = cp.Variable((n, n), PSD=True)  # Positive definite matrix
-    K = cp.Variable((m, n))            # Feedback gain
+    K = cp.Variable((m, n))            # Feedback gain matrix
 
-    # Objective: Maximize volume of ellipsoid
+    # Objective: Maximize the volume of the ellipsoid (proportional to log(det(P^-1)))
     objective = cp.Minimize(-cp.log_det(P))
 
     # Constraints
     constraints = []
 
-    # Positive invariance: (A + BK)^T P (A + BK) - P <= 0
-    constraints.append((A + B @ K).T @ P @ (A + B @ K) - P << 0)
+    # 1. Positive definiteness of P
+    constraints.append(P >> 0)
 
-    # State constraints: Hx.T P^-1 Hx <= hx^2
-    for i in range(Hx.shape[0]):
-        constraints.append(Hx[i, :] @ cp.inv_pos(P) @ Hx[i, :].T <= hx[i]**2)
+    # 2. Positive invariance condition: (A + BK)^T P (A + BK) - P <= 0
+    M = (A + B @ K).T @ P @ (A + B @ K) - P
+    constraints.append(M << 0)
 
-    # Input constraints: Hu.T K P^-1 K^T Hu <= hu^2
-    for i in range(Hu.shape[0]):
-        constraints.append(Hu[i, :].T @ cp.inv_pos(P) @ Hu[i, :] <= hu[i]**2)
-
+    # Solve the problem
     problem = cp.Problem(objective, constraints)
     problem.solve()
 
@@ -146,6 +139,7 @@ def Assignment32():
     plot_ellipsoid(ellipsoid, color='violet', label="$\epsilon$")
 
     # Method 2: Solving a convex optimization problem
+    Hu = np.vstack(([1], [-1]))
     P, K = method2(A, B, Hx, hx, Hu, hu)
 
     plt.legend()
@@ -156,8 +150,6 @@ def Assignment32():
 
 def Assignment33():
     pass
-
-
 
 def main():
     Assignment32()
