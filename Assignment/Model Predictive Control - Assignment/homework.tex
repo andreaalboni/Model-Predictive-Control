@@ -271,6 +271,21 @@ $x_{t+1} = A x_t + B u_t$ under the policy $u_t = K x_t$.
 		x^\top P x \leq 1 \implies x^\top(A + BK)^\top P (A + BK)x \leq 1  \quad \forall x \in \R
 	\]
 \end{assignment}
+\begin{flushleft}
+	To enforce positive invariance, if $x \in E$, then $x_{k+1} = (A + BK) x_k \in E$ too, we need:
+\end{flushleft}
+\begin{equation}
+	x^\top(A + BK)^\top P (A + BK)x \preceq x^\top P x, \quad \forall x \in E
+\end{equation}
+Subtracting $x^\top P x$ from both sides, we obtain:
+\begin{equation}
+	x^\top\Big[ (A + BK)^\top P (A + BK) - P \Big] x \preceq 0
+\end{equation}
+This implies:
+\begin{equation}
+	(A + BK)^\top P (A + BK) - P \preceq 0
+\end{equation}
+The term $(A + BK)^\top P (A + BK) - P$ represents the "transformed" shape of the ellipsoid $E$ under the system dynamics, $u = Kx$. The constraint ensures that the transformed ellipsoid is contained within the original ellipsoid $E$, preserving invariance.
 
 
 
@@ -293,6 +308,40 @@ $x_{t+1} = A x_t + B u_t$ under the policy $u_t = K x_t$.
 		\item Apply the \href{https://inst.eecs.berkeley.edu/~ee127/sp21/livebook/thm_schur_compl.html}{Schur complement lemma}.
 	\end{enumerate}
 \end{assignment}
+\begin{flushleft}
+	Given $P = P^\top$ by construction, we can multiply the inequality by $P^{-1}$ from the left and the right:
+\end{flushleft}
+\begin{equation}
+	\begin{aligned}
+		P^{-1} \Big[ (A + BK)^\top P (A + BK) - P \Big] P^{-1} &\preceq 0 \\  
+		P^{-1} (A + BK)^\top P (A + BK) P^{-1} - P^{-1} &\preceq 0 \\
+	\end{aligned}
+\end{equation}
+Let's introduce the change of variables:
+\begin{equation}
+	\begin{aligned}
+		S = P^{-1} &\implies P = S^{-1}\\
+		F = KS &\implies K = FS^{-1}
+	\end{aligned}
+\end{equation}
+Therefore, we have that:
+\begin{equation}
+	\begin{aligned}
+		S \Big[A + B ( F S^{-1}) \Big]^\top S^{-1} \Big[A + B ( F S^{-1} ) \Big] S - S &\preceq 0 \\
+		S \Big[A^\top + S^{-1} F^\top B^\top \Big] S^{-1} \Big[A + B ( F S^{-1} ) \Big] S - S &\preceq 0 \\
+		\Big[A S + B F \Big]^\top S^{-1} \Big[A S + B F \Big] - S &\preceq 0 \\
+		S - \Big[A S + B F \Big]^\top S^{-1} \Big[A S + B F \Big] &\succeq 0
+	\end{aligned}
+\end{equation}
+Finally, applying the Schur complement lemma, we obtain the desired LMI:
+\begin{equation}
+	\begin{aligned}
+		\begin{bmatrix}
+			S & (AS + BF)^\top \\ 
+			AS + BF & S
+		\end{bmatrix} &\succeq 0
+	\end{aligned}
+\end{equation}
 
 
 
@@ -312,6 +361,10 @@ $x_{t+1} = A x_t + B u_t$ under the policy $u_t = K x_t$.
 	\textbf{Hint.} An expression for the support function of an Ellipsoid is given in the 
 	slides. (It's also a useful exercise to derive it yourself from the definition, but this is not part of the assignment) 
 \end{assignment}
+\begin{flushleft}
+	Done on paper, TO CHECK
+\end{flushleft}
+
 
 
 \begin{assignment}\label{sess3:c3}
@@ -322,6 +375,11 @@ $x_{t+1} = A x_t + B u_t$ under the policy $u_t = K x_t$.
 	\]
 	Use the Schur complement lemma to write this constraint as an LMI in $F$ and $S$.
 \end{assignment}
+\begin{flushleft}
+	Done on paper, TO CHECK
+\end{flushleft}
+
+
 
 \begin{assignment}
 	Since the volume of the ellipsoid is proportional to $\log \det P^{-1}$, we can now 
@@ -330,6 +388,9 @@ $x_{t+1} = A x_t + B u_t$ under the policy $u_t = K x_t$.
 	
 	Implement this problem using \texttt{cvxpy} and plot the resulting ellipsoid (using the given utility code as before.)
 \end{assignment}
+\begin{flushleft}
+	TO BE DONE
+\end{flushleft}
 
 
 
