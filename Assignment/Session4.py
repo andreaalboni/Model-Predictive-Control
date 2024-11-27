@@ -202,7 +202,7 @@ def compute_circles(circles_number, length, width, car_position, car_yaw):
     centers = []
 
     # Definition of the car's rotation matrix
-    R = np.array([[math.cos(car_yaw), -math.sin(car_yaw)], [math.sin(car_yaw), math.cos(car_yaw)]])
+    R = np.array([[np.cos(car_yaw), -np.sin(car_yaw)], [np.sin(car_yaw), np.cos(car_yaw)]])
     
     d = length / (2 * circles_number)
     radius = math.sqrt(d**2 + (width/2)**2)
