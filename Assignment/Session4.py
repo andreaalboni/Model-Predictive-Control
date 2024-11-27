@@ -116,8 +116,8 @@ class MPCController:
         lbu = np.array([params.min_drive,-params.max_steer])
         ubu = np.array([params.max_drive,params.max_steer])
         
-        Q = cs.diagcat(1,3,0.1,0.01)
-        R = cs.diagcat(1,0.01)
+        Q = cs.diagcat(1, 3, 0.1, 0.01)
+        R = cs.diagcat(1, 0.01)
         Q_N = 5 * Q
         
         cost = 0
@@ -193,6 +193,54 @@ class MPCController:
         u = self.reshape_input(solution)
         return u[0]
 
+def build_test_policy():
+    # Define a policy to test the system
+    acceleration = 1 # Fix a constant longitudinal acceleration 
+    policy = lambda y, t: np.array([acceleration, 0.1 * np.sin(t)])
+    return policy
+
+def compare_open_loop(ts: float, x0: np.ndarray, steps: int): 
+    """Compare the open-loop predictions using different discretization schemes.
+
+    Args:
+        ts (float): Sampling time (s) 
+        x0 (np.ndarray): Initial state
+        steps (int): Number of steps to predict
+    """
+    params = VehicleParameters()
+    kin_bicycle = KinematicBicycle(params)
+    rk4_discrete_time = runge_kutta4(kin_bicycle, ts)
+    fe = forward_euler(kin_bicycle, ts)
+    gt_discrete_time = exact_integration(kin_bicycle, ts)
+    
+    test_policy = build_test_policy()
+
+    # Plot the results
+    _, axes = plt.subplots(constrained_layout = True)
+    axes.set_xlabel("$p_{x}$")
+    axes.set_ylabel("$p_{y}$")
+    axes.set_title(f"Position trajectories Ts = {ts}")
+    results = dict()
+    for name, dynamics in {"Forward Euler": fe, "RK 4": rk4_discrete_time, "Ground truth": gt_discrete_time}.items():
+        states = simulate(x0, dynamics, steps, policy=test_policy)
+        axes.plot(states[:,0], states[:,1], label=name, linestyle="--")
+        results[name] = states
+
+    axes.legend()
+    
+    # Plot the errors
+    plt.figure()
+    plt.xlabel("Time step $k$")
+    plt.ylabel("$\| x_k - \hat{x}_k\|$")
+    for name, dynamics in {"Forward Euler": fe, "RK 4": rk4_discrete_time}.items():
+        error = np.linalg.norm(results["Ground truth"] - results[name], axis=1)
+        plt.semilogy(error, label=name)
+    
+    plt.legend()
+    plt.title(f"Open loop prediction errors ($T_s = {ts}s$)")
+    plt.show()
+
+
 def compute_circles(circles_number, length, width, car_position, car_yaw):
     centers = []
 
@@ -243,6 +291,7 @@ def plot(nc, length, width, car_position=(0.0, 0.0), car_yaw=0.0):
     plt.show()
 
 
+
 def Assignment41():
     num_circles = 3
     length = 4
@@ -274,7 +323,6 @@ def Assignment44():
 
     # Build the assumed model 
     bicycle = KinematicBicycle(VehicleParameters())
-
     dynamics_assumed = runge_kutta4(bicycle, ts)
     #dynamics_assumed = forward_euler(bicycle, ts)
 
@@ -343,7 +391,7 @@ def main():
     # Set the plot limits
     lim = np.max([length, width])
     ax.set_xlim(-lim + car_position[0], lim + car_position[0])
-    ax.set_ylim(-lim + car_position[1], lim + car_position[1])
+    ax.set_ylim(-0.2, 0.2)
 
     # Set aspect ratio to be equal
     ax.set_aspect('equal')
