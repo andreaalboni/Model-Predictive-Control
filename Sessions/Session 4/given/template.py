@@ -16,9 +16,12 @@ import matplotlib.pyplot as plt
 
 PARK_DIMS = np.array((0.25, 0.12)) # w x h of the parking spot. Just for visualization purposes. 
 
+
+
 #-----------------------------------------------------------
 # INTEGRATION
 #-----------------------------------------------------------
+
 
 def forward_euler(f, ts) -> Callable:
     def fw_eul(x,u):
@@ -27,12 +30,11 @@ def forward_euler(f, ts) -> Callable:
 
 def runge_kutta4(f, ts) -> Callable:
     def rk4_dyn(x,u):
-        #Begin TODO----------------------------------------------------------
-        raise NotImplementedError("Implement the RK4 integrator!")
-        x_next = ... 
-        #End TODO -----------------------------------------------------------
-        return x_next 
-    
+        s1 = f(x, u)
+        s2 = f(x + ts/2 * s1, u)
+        s3 = f(x + ts/2 * s2, u)
+        s4 = f(x + ts * s3, u)
+        return x + ts/6 * (s1 + 2*s2 + 2*s3 + s4)
     return rk4_dyn
 
 def exact_integration(f, ts) -> Callable:
@@ -61,6 +63,7 @@ def build_test_policy():
     acceleration = 1 # Fix a constant longitudinal acceleration 
     policy = lambda y, t: np.array([acceleration, 0.1 * np.sin(t)])
     return policy
+
 
 #-----------------------------------------------------------
 # MPC CONTROLLER
@@ -111,14 +114,54 @@ class MPCController:
         """
         # Create a parameter for the initial state. 
         x0 = cs.SX.sym("x0", (4,1))
-        
-        #Begin TODO----------------------------------------------------------
-        raise NotImplementedError("Implement the build step of your optimal control problem!")
+
+        N=self.N
         x = x0
-        ...
-        nlp = ... 
-        bounds = ... 
-        #End TODO -----------------------------------------------------------
+        u=[cs.SX.sym(f"u_{t}", (2,1)) for t in range(N)]
+        self.u=u
+        # Add upper− and lower bounds to x and u.
+        
+        lb_states = np.array([params.min_pos_x,params.min_pos_y,params.min_heading,params.min_vel])
+        ub_states= np.array([params.max_pos_x,params.max_pos_y,params.max_heading,params.max_vel])
+        
+        lbu = np.array([params.min_drive,-params.max_steer])
+        ubu = np.array([params.max_drive,params.max_steer])
+        
+        # Define the cost
+        
+        Q=cs.diagcat(1,3,0.1,0.01)
+        R=cs.diagcat(1,0.01)
+        Q_N=5*Q
+        cost=0
+        lbx=[]
+        ubx=[]
+        g=[]
+        lbg=[]
+        ubg=[]
+        ts=self.ts
+        ode=KinematicBicycle(params,symbolic=True)
+        f=forward_euler(ode, ts)
+        for k in range(N):
+          cost = cost+x.T@Q@x+u[k].T@R@u[k]
+          x=f(x,u[k])
+          lbx.append(lbu)
+          ubx.append(ubu)
+          g.append(x)
+          lbg.append(lb_states)
+          ubg.append(ub_states)
+          
+        cost+=x.T@Q_N@x
+        variables=cs.vertcat(*u)
+        
+        # Create the solver
+        nlp = {"f": cost,"x": variables,"g" : cs.vertcat(*g),"p" :x0}
+        
+        bounds ={
+            "lbx": cs.vertcat(*lbx),
+            "ubx": cs.vertcat(*ubx),
+            "lbg": cs.vertcat(*lbg),
+            "ubg": cs.vertcat(*ubg)
+            }
         return nlp, bounds
 
     def reshape_input(self, sol):
@@ -135,9 +178,11 @@ class MPCController:
         return u[0]
 
 
+
 #-----------------------------------------------------------
 # UTILITIES
 #-----------------------------------------------------------
+
 
 def build_test_policy():
     # Define a policy to test the system
@@ -195,9 +240,11 @@ def rel_error(val, ref):
     )/0.5*(1e-12 + np.linalg.norm(val, axis=1, ord=np.inf) + np.linalg.norm(ref, axis=1, ord=np.inf))
 
 
+
 #-----------------------------------------------------------
 # EXERCISES
 #-----------------------------------------------------------
+
 
 def print_incomplete(i: int, msg: str):
     print(f"Exercise {i} incomplete.\n\n{msg}")
@@ -217,7 +264,7 @@ def exercise2():
 
 def exercise3():
     print("Exercise 3")
-    N=50
+    N = 60
     ts = 0.05
     x0 = np.array([0.6, -0.25, 0, 0])
 
@@ -277,7 +324,7 @@ def exercise5():
 
 
 if __name__ == "__main__":
-    exercise1()
-    # exercise3()
+    # exercise1()
+    exercise3()
     # exercise4()
     # exercise5()
