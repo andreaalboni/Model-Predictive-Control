@@ -105,9 +105,8 @@ class MPCController:
         # Create a parameter for the initial state. 
         x0 = cs.SX.sym("x0", (4,1))
 
-        N = self.N
         x = x0
-        u = [cs.SX.sym(f"u_{t}", (2,1)) for t in range(N)]
+        u = [cs.SX.sym(f"u_{t}", (2,1)) for t in range(self.N)]
         self.u = u
         
         # Add upper− and lower bounds to x and u
@@ -119,7 +118,7 @@ class MPCController:
         
         Q = cs.diagcat(1,3,0.1,0.01)
         R = cs.diagcat(1,0.01)
-        Q_N = 5*Q
+        Q_N = 5 * Q
         
         cost = 0
         lbx = []
@@ -136,7 +135,7 @@ class MPCController:
         parkedcar_yaw = 0.
         centers_parkedcar, radius_parkedcar = compute_circles(3, params.length, params.width, parkedcar_position, parkedcar_yaw)
 
-        for k in range(N):
+        for k in range(self.N):
             cost += x.T @ Q @ x + u[k].T @ R @ u[k]
             x = f(x,u[k])
             lbx.append(lbu)
@@ -147,13 +146,13 @@ class MPCController:
             lbg.append(lb_states)
             ubg.append(ub_states)
 
-            # Compute centers
             centers_movingcar, radius_movingcar = compute_circles(3, params.length, params.width, (x[0], x[1]), x[2])
+            # Compute the distance between the center of the circles and the ones belonging to the stationary car
             for center in centers_movingcar:
-                # Compute the distance between the center of the circles and the ones belonging to the stationary car
                 for center_parkedcar in centers_parkedcar:
                     # Squared distance between the centers
                     sqdist = (center[0]-center_parkedcar[0])**2 + (center[1]-center_parkedcar[1])**2
+                    
                     # Sqaured distance between the radii
                     sqrad = (radius_movingcar + radius_parkedcar)**2
                     
@@ -161,7 +160,7 @@ class MPCController:
                     #    print(f"Collision detected at time step {k}")
                     #    print("PD")
 
-                    # Add the constraint to the list of constraints and the bounds
+                    # Add the constraint to the list of constraints and the relative bounds
                     g.append(sqrad-sqdist)
                     lbg.append(-cs.inf)
                     ubg.append(0)
@@ -170,14 +169,15 @@ class MPCController:
         variables = cs.vertcat(*u)
         
         # Create the solver
-        nlp = {"f": cost,"x": variables,"g" : cs.vertcat(*g),"p" :x0}
+        nlp = {"f": cost, "x": variables, "g" : cs.vertcat(*g), "p" :x0}
         
-        bounds ={
+        bounds = {
             "lbx": cs.vertcat(*lbx),
             "ubx": cs.vertcat(*ubx),
             "lbg": cs.vertcat(*lbg),
             "ubg": cs.vertcat(*ubg)
             }
+        
         return nlp, bounds
 
     def reshape_input(self, sol):
@@ -309,6 +309,48 @@ def Assignment44():
 def main():
     #Assignment41()
     #Assignment42()
+
+    params = VehicleParameters()
+    length = params.length
+    width = params.width
+    car_position = (0.3, -0.1)
+    R1 = Rectangle(
+            (-length/2+car_position[0], -width/2+car_position[1]), 
+            length, 
+            width, 
+            facecolor='none', 
+            edgecolor='black', 
+            linewidth=1
+        )
+
+    car_position = (0.25, 0)
+    R2 = Rectangle(
+            (-length/2+car_position[0], -width/2+car_position[1]), 
+            length, 
+            width, 
+            facecolor='none', 
+            edgecolor='red', 
+            linewidth=1
+        )
+
+    # Create a figure and axes
+    _, ax = plt.subplots()
+
+    # Add the rectangle to the axes
+    ax.add_patch(R1)
+    ax.add_patch(R2)
+
+    # Set the plot limits
+    lim = np.max([length, width])
+    ax.set_xlim(-lim + car_position[0], lim + car_position[0])
+    ax.set_ylim(-lim + car_position[1], lim + car_position[1])
+
+    # Set aspect ratio to be equal
+    ax.set_aspect('equal')
+
+    # Display the plot
+    plt.show()    
+
     Assignment44()
 
 if __name__ == "__main__":

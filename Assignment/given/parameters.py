@@ -3,12 +3,12 @@ import numpy as np
 
 @dataclass
 class VehicleParameters:
-    length: float = 4  # length of the car (meters)
+    length: float = 0.17  # length of the car (meters)
     axis_front: float = 0.047  # distance cog and front axis (meters)
     axis_rear: float = 0.05  # distance cog and rear axis (meters)
     front: float = 0.08  # distance cog and front (meters)
     rear: float = 0.08  # distance cog and rear (meters)
-    width: float = 2  # width of the car (meters)
+    width: float = 0.08  # width of the car (meters)
     height: float = 0.055  # height of the car (meters)
     mass: float = 0.1735  # mass of the car (kg)
     inertia: float = 18.3e-5  # moment of inertia around vertical (kg*m^2)
