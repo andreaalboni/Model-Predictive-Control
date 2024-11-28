@@ -553,8 +553,13 @@ Moroever, the radius of the circles, applying the Pitagora theorem, can be expre
 \[
 	r = \sqrt{d^2 + \frac{w^2}{4}}
 \]
-Below, a picture of the vehicle covered by 3 circles is shown.
-AGGIUNGILA ZIO PERA.
+Below, Figure \ref{fig:assignment4_1}, a picture of the vehicle covered by 3 circles is shown.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/Assignment 4.1.png}
+    \caption{Vehicle covered by 3 circles}
+    \label{fig:assignment4_1}
+\end{figure}
 
 
 
@@ -586,8 +591,13 @@ And we sum to the circles' local coordinates obtained previously the global coor
 		p_x \\ p_y
 	\end{bmatrix}
 \]
-Below, a picture of the vehicle having a yaw, $ \psi = \pi/4 $, positioned in $	p = [2, 2]^\top $ covered by 3 circles is shown.
-AGGIUNGILA ZIO PERA.
+Below, Figure \ref{fig:assignment4_2}, a picture of the vehicle having a yaw, $ \psi = \pi/4 $, positioned in $	p = [2, 2]^\top $ covered by 3 circles is shown.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/Assignment 4.2.png}
+    \caption{Vehicle global coordinates covered by 3 circles}
+    \label{fig:assignment4_2}
+\end{figure}
 
 
 
@@ -608,6 +618,26 @@ AGGIUNGILA ZIO PERA.
 
 	\textbf{Hint:} Squaring can get rid of isolated points of non-smoothness.
 \end{assignment}
+\begin{flushleft}
+	To guarantee that the intersection between the two vehicles is empty, using circles, we can formulate a constraint based on the distance between the centers of the circles and the sum of their radii. To guarantee the smoothness of the constraint, we can square both distances.
+\end{flushleft}
+The squared distance between the centers of the circles is:
+\[
+	d_{c}^2 = \|\bar{c}_i - \bar{c}_j'\|_2^2 = (\bar{c}_i - \bar{c}_j')^\top (\bar{c}_i - \bar{c}_j') \quad \forall i,j
+\]
+The squared sum of the radii is:
+\[
+	d_{r}^2 = (r + r')^2
+\]
+Therefore, the constraint can be formulated as:
+\begin{equation}
+	\begin{aligned}
+		g(\bar{c}_i, \bar{c}_j') &= d_{r}^2 - d_{c}^2 \leq 0 \\
+								 &= (r + r')^2 - (\bar{c}_i - \bar{c}_j')^\top (\bar{c}_i - \bar{c}_j') \leq 0
+	\end{aligned}
+\end{equation}
+The euclidean norm squared is a convex function, the negative of a convex function is a concave function. Therefore, the constraint is concave because it is the sum between a concave function and a constant. 
+
 
 
 \begin{assignment}

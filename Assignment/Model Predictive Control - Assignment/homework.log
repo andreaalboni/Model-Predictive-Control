@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.11)  28 NOV 2024 13:08
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.11)  28 NOV 2024 18:07
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1716,16 +1716,29 @@ File: figures/covering_circles5.pdf Graphic file (type pdf)
 <use figures/covering_circles5.pdf>
 Package pdftex.def Info: figures/covering_circles5.pdf  used on input line 518.
 (pdftex.def)             Requested size: 128.0387pt x 64.01561pt.
+<images/Assignment 4.1.png, id=143, 321.6015pt x 327.48634pt>
+File: images/Assignment 4.1.png Graphic file (type png)
+<use images/Assignment 4.1.png>
+Package pdftex.def Info: images/Assignment 4.1.png  used on input line 559.
+(pdftex.def)             Requested size: 213.39568pt x 217.30095pt.
 
 
 [9 <./figures/covering_circles2.pdf> <./figures/covering_circles3.pdf> <./figures/covering_circles5.pdf>]
+<images/Assignment 4.2.png, id=186, 321.6015pt x 327.48634pt>
+File: images/Assignment 4.2.png Graphic file (type png)
+<use images/Assignment 4.2.png>
+Package pdftex.def Info: images/Assignment 4.2.png  used on input line 597.
+(pdftex.def)             Requested size: 213.39568pt x 217.30095pt.
 
-[10] (c:/texlive/2024/texmf-dist/tex/latex/listings/lstlang1.sty
+
+[10 <./images/Assignment 4.1.png>]
+
+[11 <./images/Assignment 4.2.png>] (c:/texlive/2024/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2024/09/23 1.10c listings language file
 )
 LaTeX Font Info:    Font shape `T1/pxtt/b/n' in size <8> not available
-(Font)              Font shape `T1/pxtt/bx/n' tried instead on input line 672.
-LaTeX Font Info:    Trying to load font information for T1+pcr on input line 681.
+(Font)              Font shape `T1/pxtt/bx/n' tried instead on input line 702.
+LaTeX Font Info:    Trying to load font information for T1+pcr on input line 711.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
@@ -1735,16 +1748,18 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             See the microtype manual for details.
 
 
-[11]
-
 [12]
-LaTeX Font Info:    Font shape `T1/pxr/b/n' in size <12> not available
-(Font)              Font shape `T1/pxr/bx/n' tried instead on input line 765.
-
 
 [13]
 
-[14] (./homework.aux)
+[14]
+LaTeX Font Info:    Font shape `T1/pxr/b/n' in size <12> not available
+(Font)              Font shape `T1/pxr/bx/n' tried instead on input line 795.
+
+
+[15]
+
+[16] (./homework.aux)
  ***********
 LaTeX2e <2024-11-01>
 L3 programming layer <2024-11-02>
@@ -1753,18 +1768,18 @@ Package rerunfilecheck Info: File `homework.out' has not changed.
 (rerunfilecheck)             Checksum: 677584DC16FE6E70164ACD212DC95CB0;1599.
  ) 
 Here is how much of TeX's memory you used:
- 37438 strings out of 473362
- 714274 string characters out of 5725050
- 1353670 words of memory out of 5000000
- 59369 multiletter control sequences out of 15000+600000
- 624455 words of font info for 415 fonts, out of 8000000 for 9000
+ 37458 strings out of 473362
+ 714844 string characters out of 5725050
+ 1356787 words of memory out of 5000000
+ 59388 multiletter control sequences out of 15000+600000
+ 624260 words of font info for 412 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  99i,13n,107p,1083b,1363s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/pxex.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/pxsy.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/pxsyb.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpcxr.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpxmi.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpxr.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpxsc.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/txfonts/t1xbtt.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/courier/ucrro8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on homework.pdf (14 pages, 191103 bytes).
+Output written on homework.pdf (16 pages, 524360 bytes).
 PDF statistics:
- 342 PDF objects out of 1000 (max. 8388607)
- 286 compressed objects within 3 object streams
- 116 named destinations out of 1000 (max. 500000)
- 114796 words of extra memory for PDF output out of 128383 (max. 10000000)
+ 361 PDF objects out of 1000 (max. 8388607)
+ 299 compressed objects within 3 object streams
+ 121 named destinations out of 1000 (max. 500000)
+ 114806 words of extra memory for PDF output out of 128383 (max. 10000000)
 

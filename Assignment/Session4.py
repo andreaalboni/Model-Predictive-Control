@@ -214,7 +214,7 @@ def compute_circles(circles_number, length, width, car_position, car_yaw):
 
     return centers, radius
 
-def plot(nc, length, width, car_position=(0.0, 0.0), car_yaw=0.0):
+def plot(nc, length, width, assignment, car_position=(0.0, 0.0), car_yaw=0.0):
     R = Rectangle(
             (-length/2+car_position[0], -width/2+car_position[1]), 
             length, 
@@ -223,7 +223,8 @@ def plot(nc, length, width, car_position=(0.0, 0.0), car_yaw=0.0):
             rotation_point=car_position,
             facecolor='none', 
             edgecolor='black', 
-            linewidth=1
+            linewidth=1,
+            label="Car"
         )
     centers, radius = compute_circles(nc, length, width, car_position, car_yaw)
 
@@ -231,11 +232,19 @@ def plot(nc, length, width, car_position=(0.0, 0.0), car_yaw=0.0):
     _, ax = plt.subplots()
 
     for center in centers:
-        circle = Circle(center, radius, facecolor='none', edgecolor='cyan', linewidth=1)
+        circle = Circle(center, radius, facecolor='none', edgecolor='cyan', linewidth=1, label="Circles")
         ax.add_patch(circle)
 
     # Add the rectangle to the axes
     ax.add_patch(R)
+
+    # Set the title and labels
+    ax.set_title(assignment)
+    handles, labels = ax.get_legend_handles_labels()
+    by_label = dict(zip(labels, handles))
+    ax.legend(by_label.values(), by_label.keys())
+    ax.set_xlabel("$p_x$ [m]")
+    ax.set_ylabel("$p_y$ [m]")
 
     # Set the plot limits
     lim = np.max([length, width])
@@ -245,6 +254,10 @@ def plot(nc, length, width, car_position=(0.0, 0.0), car_yaw=0.0):
     # Set aspect ratio to be equal
     ax.set_aspect('equal')
 
+    # Save the plot as an image
+    filename = f"{assignment}.png"
+    plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
+
     # Display the plot
     plt.show()
 
@@ -252,17 +265,19 @@ def plot(nc, length, width, car_position=(0.0, 0.0), car_yaw=0.0):
 
 def Assignment41():
     num_circles = 3
+    assignment = "Assignment 4.1"
     length = 4
     width = 2
-    plot(num_circles, length, width)
+    plot(num_circles, length, width, assignment)
 
 def Assignment42():
     num_circles = 3
+    assignment = "Assignment 4.2"
     length = 4
     width = 2
     car_position = (2.0, 2.0)
     car_yaw = math.pi / 4
-    plot(num_circles, length, width, car_position, car_yaw)
+    plot(num_circles, length, width, assignment, car_position, car_yaw)
 
 def Assignment44():
     N = 30
@@ -314,7 +329,7 @@ def Assignment44():
     plt.show()
 
 def main():
-    #Assignment41()
+    Assignment41()
     Assignment42()    
 
     Assignment44()
