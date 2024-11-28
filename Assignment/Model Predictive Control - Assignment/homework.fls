@@ -553,6 +553,8 @@ INPUT ./figures/covering_circles5.pdf
 INPUT ./figures/covering_circles5.pdf
 INPUT ./figures/covering_circles5.pdf
 INPUT c:/texlive/2024/texmf-dist/fonts/tfm/public/pxfonts/p1xi.tfm
+INPUT c:/texlive/2024/texmf-dist/fonts/vf/public/pxfonts/p1xi.vf
+INPUT c:/texlive/2024/texmf-dist/fonts/tfm/public/pxfonts/rpxi.tfm
 INPUT c:/texlive/2024/texmf-dist/tex/latex/listings/lstlang1.sty
 INPUT c:/texlive/2024/texmf-dist/tex/latex/listings/lstlang1.sty
 INPUT c:/texlive/2024/texmf-dist/tex/latex/listings/lstlang1.sty
@@ -561,8 +563,6 @@ INPUT c:/texlive/2024/texmf-dist/tex/latex/psnfss/t1pcr.fd
 INPUT c:/texlive/2024/texmf-dist/tex/latex/psnfss/t1pcr.fd
 INPUT c:/texlive/2024/texmf-dist/tex/latex/psnfss/t1pcr.fd
 INPUT c:/texlive/2024/texmf-dist/fonts/tfm/adobe/courier/pcrro8t.tfm
-INPUT c:/texlive/2024/texmf-dist/fonts/vf/public/pxfonts/p1xi.vf
-INPUT c:/texlive/2024/texmf-dist/fonts/tfm/public/pxfonts/rpxi.tfm
 INPUT c:/texlive/2024/texmf-dist/fonts/vf/adobe/courier/pcrro8t.vf
 INPUT c:/texlive/2024/texmf-dist/fonts/tfm/adobe/courier/pcrro8r.tfm
 INPUT c:/texlive/2024/texmf-dist/fonts/vf/public/pxfonts/pxmi.vf

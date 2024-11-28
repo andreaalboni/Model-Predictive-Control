@@ -362,8 +362,37 @@ Finally, applying the Schur complement lemma, we obtain the desired LMI:
 	slides. (It's also a useful exercise to derive it yourself from the definition, but this is not part of the assignment) 
 \end{assignment}
 \begin{flushleft}
-	Done on paper, TO CHECK
+	Developing the definition of the ellipsoid $E$:
 \end{flushleft}
+\[ 
+    E \subseteq \{x \in \mathbb{R}^n \mid Hx \leq g \} \equiv 
+    \left\{ x \in \mathbb{R}^n \mid 
+    \begin{bmatrix}
+        H_x \\
+        K^\top H_u
+    \end{bmatrix} x \leq 
+    \begin{bmatrix}
+        h_x \\
+        h_u
+    \end{bmatrix} 
+    \right\}
+\]
+The support function of the ellipsoid $E$ is given by:
+\[ 
+	\sigma_E(v) = \alpha^{1/2} \|P^{1/2} v\|_2
+\] 
+Therefore, knowing that $ P^{-1} = S $, we can write the support function as:
+\begin{equation}
+	\begin{aligned}
+		\sigma_E(H_i) &= \alpha^{1/2} \|S^{1/2} H_i\|_2 \\
+					  &= \alpha^{1/2} \Big[ \Big( S^{1/2} H_i \Big)^\top \Big( S^{1/2} H_i \Big) \Big]^{1/2} \\
+					  &= \alpha^{1/2} \Big( H_i^\top S H_i \Big)^{1/2}
+	\end{aligned}
+\end{equation}
+Since we are interested only in the states and $x^\top P x \leq 1 \implies \alpha = 1$:
+\begin{equation}
+		\sigma_E(H_{x,i}) = \Big( H_{x,i}^\top P H_{x,i} \Big)^{1/2} \leq g_{x,i} = h_{x,i} \implies \Big( H_{x,i}^\top S H_{x,i} \Big) \leq {h^2}_{x,i}, \quad \forall i = 1, \dots, m_x
+\end{equation}
 
 
 
@@ -376,8 +405,43 @@ Finally, applying the Schur complement lemma, we obtain the desired LMI:
 	Use the Schur complement lemma to write this constraint as an LMI in $F$ and $S$.
 \end{assignment}
 \begin{flushleft}
-	Done on paper, TO CHECK
+	Developing the definition of the ellipsoid $E$:
 \end{flushleft}
+\[ 
+    E \subseteq \{x \in \mathbb{R}^n \mid Hx \leq g \} \equiv 
+    \left\{ x \in \mathbb{R}^n \mid 
+    \begin{bmatrix}
+        H_x \\
+        K^\top H_u
+    \end{bmatrix} x \leq 
+    \begin{bmatrix}
+        h_x \\
+        h_u
+    \end{bmatrix} 
+    \right\}
+\]
+As previously seen, knowing that $ P^{-1} = S $, we can write the support function as:
+\begin{equation}
+	\sigma_E(H_i) = \alpha^{1/2} \Big( H_i^\top S H_i \Big)^{1/2}
+\end{equation}
+Since we are interested only in the inputs and knowing that $ K = F S^{-1} $:
+\begin{equation}
+	\begin{aligned}
+		\sigma_E(K^\top H_{u,i}) &= \sigma_E(S^{-1} F^\top H_{u,i}) \\
+								 &= \Big( H_{u,i}^\top F S^{-1} S S^{-1} F^\top H_{u,i} \Big)^{1/2} \leq g_{u,i} = h_{u,i} \\
+								 &= \Big( H_{u,i}^\top F S^{-1} F^\top H_{x,i} \Big) \leq {h^2}_{u,i} \\
+								 &\implies h_{u,i}^2 - H_{u,i}^\top F P F^\top H_{u,i} \preceq 0, \quad \forall i = 1, \dots, m_{u}
+	\end{aligned}
+\end{equation}
+Applying the Schur complement lemma, we obtain the desired LMI:
+\begin{equation}
+	\begin{aligned}
+		\begin{bmatrix}
+			h_{u,i}^2 & H_{u,i}^\top F \\ 
+			F^\top H_{u,i} & S
+		\end{bmatrix} &\succeq 0
+	\end{aligned}
+\end{equation}
 
 
 
@@ -472,6 +536,26 @@ radius of the circles, $l$ is the length of the vehicle and $w$ is the width of 
 
 	\textbf{Hint:} This task involves only basic geometry.
 \end{assignment}
+\begin{flushleft}
+	Studying the figures, we can see derive an expression to compute d:
+\end{flushleft}
+\[
+	d = \frac{l}{2 * nc} \quad \text{where } nc \text{ is the number of circles}
+\]
+Therefore the position of the center of the circles can be expressed as, taking into consideration the desired refernce frame:
+\[
+	c_i = \begin{bmatrix}
+		- \frac{l}{2} + (1 + 2i)d \\
+		0
+	\end{bmatrix} \quad \text{where } c_i \text{ is the center of the i-th circle}
+\]
+Moroever, the radius of the circles, applying the Pitagora theorem, can be expressed as:
+\[
+	r = \sqrt{d^2 + \frac{w^2}{4}}
+\]
+Below, a picture of the vehicle covered by 3 circles is shown.
+AGGIUNGILA ZIO PERA.
+
 
 
 \begin{assignment}
@@ -486,6 +570,25 @@ radius of the circles, $l$ is the length of the vehicle and $w$ is the width of 
 	\textbf{Hint:} You can write your result in terms of the rotation matrix $R(\psi)$ defined by 
 	the heading angle $\psi$. There is no need to work out everything into individual components.
 \end{assignment}
+\begin{flushleft}
+	In order to go from local coordinates to global coordinates, we implement the rotation matrix $R(\psi)$:
+\end{flushleft}
+\[
+	R(\psi) = \begin{bmatrix}
+		\cos(\psi) & -\sin(\psi) \\
+		\sin(\psi) & \cos(\psi)
+	\end{bmatrix}
+\]
+And we sum to the circles' local coordinates obtained previously the global coordinates of the vehicle:
+\[
+	c_{i,global} = R c_{i,local} + p \quad \text{where } p \text{ is the position of the center of the car } 
+	\begin{bmatrix}
+		p_x \\ p_y
+	\end{bmatrix}
+\]
+Below, a picture of the vehicle having a yaw, $ \psi = \pi/4 $, positioned in $	p = [2, 2]^\top $ covered by 3 circles is shown.
+AGGIUNGILA ZIO PERA.
+
 
 
 \begin{assignment}
