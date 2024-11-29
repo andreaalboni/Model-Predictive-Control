@@ -255,8 +255,8 @@ def plot(nc, length, width, assignment, car_position=(0.0, 0.0), car_yaw=0.0):
     ax.set_aspect('equal')
 
     # Save the plot as an image
-    filename = f"{assignment}.png"
-    plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
+    #filename = f"{assignment}.png"
+    #plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
 
     # Display the plot
     plt.show()
