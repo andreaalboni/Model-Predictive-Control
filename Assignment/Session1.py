@@ -209,6 +209,10 @@ def Assignment12():
     plt.xlabel("Horizon Length (N)")
     plt.ylabel("Value Function")
     plt.ylim(0, 2000)
+
+    filename = "a.png"
+    plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
+
     plt.show()
 
 

@@ -70,11 +70,21 @@ Before submitting your final report, make sure that you verify your solutions fr
 \end{assignment}
 
 \begin{flushleft}
-Zio pera, grafico sembra giusto.  
-uno converge dal basso perchè considera solo il costo per fare gli N (horizon) steps dell'mpc. non considera tutto ciò che avverrà successivamente all'horizon.
-l'altro converge dall'alto perchè considera il costo di tutti gli steps, infatti per horizon < 4 sono instabili -> costo infinito.
-linea costante perchè costo infinito è quello.
+Figure \ref{fig:assignment1_2} illustrates the behavior of the value function $ V_N $, $ V_\infty $ and $ \hat{V}_N $ as a function of the horizon $ N $.
+Each curve represents a different computation of the cost. $ V_N $, shown in cyan, which is converging from below represents the cost of following the MPC policy over a finite horizon 
+$ N $. Since it only considers the cost over the horizon without accounting for what happens beyond it, $V_N$ tends to underestimate the total cost. As $N$ increases, $V_N$ includes the effects of more steps and approaches the infinite-horizon cost $V_\infty$.
+The value function $\hat{V}_N$, shown in green, represents the cost computed for the infinite sequence of actions when applying the MPC policy derived using horizon $N$.
+Initially, for small horizons (e.g. $N$ < 4), the MPC policy produces an unstable trajectory, leading to an infinite cost. However, as $N$ increases, the policy stabilizes, and 
+$\hat{V}_N$ converges from above to the infinite-horizon cost $V_\infty$. The magenta line represents the infinite-horizon optimal cost $V_\infty$, which is constant and provides a benchmark for comparison.  
 \end{flushleft}
+
+The figure highlights the importance of selecting an adequate prediction horizon in MPC. For small horizons, the controller may produce unstable trajectories, as evidenced by the infinite cost. Once the horizon is sufficiently long (e.g. $N \geq$ 4), the MPC policy stabilizes, and both $V_N$ and $\hat{V}_N$ approach $V_\infty$, ensuring optimal and stable control.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/Assignment_12.png}
+    \caption{Plot}
+    \label{fig:assignment1_2}
+\end{figure}
 
 
 
@@ -556,7 +566,7 @@ Moroever, the radius of the circles, applying the Pitagora theorem, can be expre
 Below, Figure \ref{fig:assignment4_1}, a picture of the vehicle covered by 3 circles is shown.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/Assignment 4.1.png}
+    \includegraphics[width=0.5\textwidth]{images/Assignment_41.png}
     \caption{Vehicle covered by 3 circles}
     \label{fig:assignment4_1}
 \end{figure}
@@ -594,7 +604,7 @@ And we sum to the circles' local coordinates obtained previously the global coor
 Below, Figure \ref{fig:assignment4_2}, a picture of the vehicle having a yaw, $ \psi = \pi/4 $, positioned in $	p = [2, 2]^\top $ covered by 3 circles is shown.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/Assignment 4.2.png}
+    \includegraphics[width=0.5\textwidth]{images/Assignment_42.png}
     \caption{Vehicle global coordinates covered by 3 circles}
     \label{fig:assignment4_2}
 \end{figure}

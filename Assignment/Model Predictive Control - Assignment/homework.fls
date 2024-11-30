@@ -529,6 +529,11 @@ INPUT c:/texlive/2024/texmf-dist/fonts/tfm/public/pxfonts/rpxi.tfm
 INPUT c:/texlive/2024/texmf-dist/fonts/vf/public/pxfonts/p1xr.vf
 INPUT c:/texlive/2024/texmf-dist/fonts/tfm/public/pxfonts/rpxpplr.tfm
 INPUT c:/texlive/2024/texmf-dist/fonts/tfm/public/pxfonts/rpxr.tfm
+INPUT ./images/Assignment_12.png
+INPUT ./images/Assignment_12.png
+INPUT ./images/Assignment_12.png
+INPUT ./images/Assignment_12.png
+INPUT ./images/Assignment_12.png
 INPUT c:/texlive/2024/texmf-dist/fonts/vf/public/pxfonts/p1xb.vf
 INPUT c:/texlive/2024/texmf-dist/fonts/tfm/public/pxfonts/rpxpplb.tfm
 INPUT c:/texlive/2024/texmf-dist/fonts/tfm/public/pxfonts/rpxb.tfm
@@ -552,16 +557,16 @@ INPUT ./figures/covering_circles5.pdf
 INPUT ./figures/covering_circles5.pdf
 INPUT ./figures/covering_circles5.pdf
 INPUT ./figures/covering_circles5.pdf
-INPUT ./images/Assignment 4.1.png
-INPUT ./images/Assignment 4.1.png
-INPUT ./images/Assignment 4.1.png
-INPUT ./images/Assignment 4.1.png
-INPUT ./images/Assignment 4.1.png
-INPUT ./images/Assignment 4.2.png
-INPUT ./images/Assignment 4.2.png
-INPUT ./images/Assignment 4.2.png
-INPUT ./images/Assignment 4.2.png
-INPUT ./images/Assignment 4.2.png
+INPUT ./images/Assignment_41.png
+INPUT ./images/Assignment_41.png
+INPUT ./images/Assignment_41.png
+INPUT ./images/Assignment_41.png
+INPUT ./images/Assignment_41.png
+INPUT ./images/Assignment_42.png
+INPUT ./images/Assignment_42.png
+INPUT ./images/Assignment_42.png
+INPUT ./images/Assignment_42.png
+INPUT ./images/Assignment_42.png
 INPUT c:/texlive/2024/texmf-dist/fonts/tfm/public/pxfonts/p1xi.tfm
 INPUT c:/texlive/2024/texmf-dist/fonts/vf/public/pxfonts/p1xi.vf
 INPUT c:/texlive/2024/texmf-dist/fonts/tfm/public/pxfonts/rpxi.tfm
