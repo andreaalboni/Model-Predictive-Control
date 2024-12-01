@@ -310,15 +310,24 @@ def go(N, Q=cs.diagcat(1, 3, 0.1, 0.01), R=cs.diagcat(1, 0.01), Q_N=5*cs.diagcat
     #print(f"Q_N: {Q_N}")
     print(f"final position: {x_closed_loop_model[-1]}")
     
-    #print(f"Total time taken: {np.sum(log.solver_time):.2f} s") # Now the solver times have been written
+    # Plot the parked car
+    parkedcar_state = np.array([[0.25, 0., 0., 0.] for _ in range(101)])
+    plot_state_trajectory(parkedcar_state, color="gray", label="Parked car")
+    plt.show()
 
     # According to chatgpt to be considered real time execution, the solver time should be less than 0.75 * ts 
     if np.max(log.solver_time) > 0.75 * ts:
         print(f"Solver time: {np.max(log.solver_time):.2f} s")
-
-    # Plot the parked car
-    parkedcar_state = np.array([[0.25, 0., 0., 0.] for _ in range(101)])
-    plot_state_trajectory(parkedcar_state, color="gray", label="Parked car")
+    else:
+        print("Real time execution")
+    # Plot solver times and horizontal line
+    plt.figure()
+    plt.plot(log.solver_time, label="Solver Time")
+    plt.axhline(y=0.75 * ts, color='r', linestyle='--', label=f"Real time limit {0.75 * ts:.2f} s")
+    plt.xlabel("Time step")
+    plt.ylabel("Solver Time [s]")
+    plt.title("Solver Time per Time Step")
+    plt.legend()
     plt.show()
 
     print(f"---Plot trajectory under the predictions")
