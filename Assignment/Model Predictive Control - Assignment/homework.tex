@@ -699,6 +699,16 @@ The euclidean norm squared is a convex function, the negative of a convex functi
 	report the final parameters that you changed from the provided defaults
 	and illustrate the final result with a plot of the trajectory.
 \end{assignment}
+\begin{flushleft}
+	nc -> cambia quanto la macchina passa vicino a quella parcheggiata. più cerchi, più la macchina si avvicina siccome migliore è l'approssimazione della macchina da parte dei cerchi.
+	
+	N -> più N è grande, più la macchina si avvicina alla posizione desiderata (centro del parcheggio, (0,0)), ma maggiore è il computational cost e time.
+
+	Q -> cambiare i primi due elementi sulla diagonale di Q aiuta, stiamo aumentando il costo legato alla posizione in x e in y, quindi la macchina tenderà a muoversi in quelle direzioni. Anche cambiare il terzo (relativo allo yaw) può aiutare.
+
+
+\end{flushleft}
+
 
 
 \begin{assignment}

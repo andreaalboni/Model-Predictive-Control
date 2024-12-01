@@ -1,19 +1,23 @@
-import math
+import os
+import sys
+import math 
 import numpy as np
+import casadi as cs 
+from time import perf_counter
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, Rectangle
 from typing import Callable, Tuple
-import sys 
-import casadi as cs 
-import os
+from dataclasses import dataclass
+from rcracers.simulator.core import BaseControllerLog, list_field
 WORKING_DIR = os.path.split(__file__)[0]
 sys.path.append(os.path.join(WORKING_DIR, os.pardir))
 from given.parameters import VehicleParameters
 from given.animation import AnimateParking
 from given.plotting import *
-
 from rcracers.simulator.dynamics import KinematicBicycle
 from rcracers.simulator import simulate
+
+PARK_DIMS = np.array((0.25, 0.12))
 
 
 def forward_euler(f, ts) -> Callable:
@@ -57,10 +61,9 @@ def build_test_policy():
     policy = lambda y, t: np.array([acceleration, 0.1 * np.sin(t)])
     return policy
 
-
 class MPCController:
 
-    def __init__(self, N: int, ts: float, *, params: VehicleParameters):
+    def __init__(self, N: int, ts: float, *, Q, R, Q_N, params: VehicleParameters):
         """Constructor.
 
         Args:
@@ -69,7 +72,7 @@ class MPCController:
         """
         self.N = N
         self.ts = ts 
-        nlp_dict, self.bounds = self.build_ocp(params)
+        nlp_dict, self.bounds = self.build_ocp(Q, R, Q_N, params)
         
         opts = {"ipopt": {"print_level": 1}, "print_time": False}
         self.ipopt_solver = cs.nlpsol("solver", "ipopt", nlp_dict, opts) 
@@ -77,7 +80,7 @@ class MPCController:
     def solve(self, x) -> dict:
         return self.ipopt_solver(p=x, **self.bounds)
         
-    def build_ocp(self, params: VehicleParameters) -> Tuple[dict, dict]:
+    def build_ocp(self, Q, R, Q_N, params: VehicleParameters) -> Tuple[dict, dict]:
         """
         Args: 
             VehicleParameters [params]: vehicle parameters
@@ -109,10 +112,6 @@ class MPCController:
         
         lbu = np.array([params.min_drive,-params.max_steer])
         ubu = np.array([params.max_drive,params.max_steer])
-        
-        Q = cs.diagcat(1, 3, 0.1, 0.01)
-        R = cs.diagcat(1, 0.01)
-        Q_N = 5 * Q
         
         cost = 0
         lbx = []
@@ -173,15 +172,22 @@ class MPCController:
     def reshape_input(self, sol):
         return np.reshape(sol["x"], ((-1, 2)))
 
-    def __call__(self, y):
+    def __call__(self, y, log) -> np.ndarray:
         """Solve the OCP for initial state y.
 
         Args:
             y (np.ndarray): Measured state 
         """
+        start = perf_counter()
         solution = self.solve(y)
+        stop = perf_counter()
         u = self.reshape_input(solution)
+        log("solver_time", stop-start)
         return u[0]
+
+@dataclass
+class ControllerLog(BaseControllerLog):
+    solver_time: list = list_field()
 
 def build_test_policy():
     # Define a policy to test the system
@@ -261,6 +267,76 @@ def plot(nc, length, width, assignment, car_position=(0.0, 0.0), car_yaw=0.0):
     # Display the plot
     plt.show()
 
+def go(N, Q=cs.diagcat(1, 3, 0.1, 0.01), R=cs.diagcat(1, 0.01), Q_N=5*cs.diagcat(1, 3, 0.1, 0.01), time=False):
+    ts = 0.08
+    x0 = np.array([0.3, -0.1, 0, 0])
+    params = VehicleParameters()
+
+    log = ControllerLog() # Initialize an empty log
+
+    print("--Set up the MPC controller")
+    controller = MPCController(N=N, Q=Q, R=R, Q_N=Q_N, ts=ts, params=params)
+
+    print(f"--Solve the OCP for x0 = {x0}")
+    solution = controller.solve(x0)
+    controls = controller.reshape_input(solution)
+
+    # Build the assumed model 
+    bicycle = KinematicBicycle(params)
+    dynamics_assumed = runge_kutta4(bicycle, ts)
+    #dynamics_assumed = forward_euler(bicycle, ts)
+
+    print(f"--Simulate under the assumed model")
+    x_closed_loop_model = simulate(x0, dynamics_assumed, n_steps=100, policy=controller, log=log)
+
+    # With more accurate predictions: 
+    print(f"--Simulate using more precise integration")
+    dynamics_accurate = exact_integration(bicycle, ts)
+    x_closed_loop_exact = simulate(x0, dynamics_accurate, n_steps=100, policy=controller)
+
+    print(f"--Plotting the results")
+
+    print(f"---Plot Controls")
+    plot_input_sequence(controls, VehicleParameters())
+    plt.show()
+    print(f"---Plot trajectory under the predictions")
+    plot_state_trajectory(x_closed_loop_model, color="tab:blue", label="Predicted", park_dims=PARK_DIMS)
+    print("---Plot the trajectory under the more accurate model")
+    plot_state_trajectory(x_closed_loop_exact, color="tab:red", label="Real")
+    plt.title("Trajectory (integration error)")
+
+    #print(f"Q: {Q}")
+    #print(f"R: {R}")
+    #print(f"Q_N: {Q_N}")
+    print(f"final position: {x_closed_loop_model[-1]}")
+    
+    #print(f"Total time taken: {np.sum(log.solver_time):.2f} s") # Now the solver times have been written
+
+    # According to chatgpt to be considered real time execution, the solver time should be less than 0.75 * ts 
+    if np.max(log.solver_time) > 0.75 * ts:
+        print(f"Solver time: {np.max(log.solver_time):.2f} s")
+
+    # Plot the parked car
+    parkedcar_state = np.array([[0.25, 0., 0., 0.] for _ in range(101)])
+    plot_state_trajectory(parkedcar_state, color="gray", label="Parked car")
+    plt.show()
+
+    print(f"---Plot trajectory under the predictions")
+    plt.figure()
+    plt.plot(rel_error(x_closed_loop_model, x_closed_loop_exact) * 100)
+    plt.xlabel("Time step")
+    plt.ylabel("$\| x - x_{pred} \| / \| x \| \\times 100$")
+    plt.title("Relative prediction error (integration error) [%]")
+    plt.show()
+
+    print("---Extra: run an animation")
+    anim = AnimateParking()
+    anim.setup(x_closed_loop_exact, ts)
+    anim.add_car_trajectory(x_closed_loop_model, color=(150, 10, 50))
+    anim.add_car_trajectory(parkedcar_state, color=(0, 255, 50))
+    anim.trace(x_closed_loop_exact)
+    anim.run()
+
 
 
 def Assignment41():
@@ -281,58 +357,31 @@ def Assignment42():
 
 def Assignment44():
     N = 30
-    ts = 0.08
-    x0 = np.array([0.3, -0.1, 0, 0])
-    params = VehicleParameters()
+    go(N)
 
-    print("--Set up the MPC controller")
-    controller = MPCController(N=N, ts=ts, params=params)
+def Assignment45():
+    N = 20
+    Q = cs.diagcat(5, 30, 0.05, 0.01)
+    R = cs.diagcat(0.5, 0.007)
+    Q_add = cs.diagcat(0, 15, 10, 0)
+    Q_N = 5 * Q + Q_add
+    go(N, Q, R, Q_N)
 
-    print(f"--Solve the OCP for x0 = {x0}")
-    solution = controller.solve(x0)
-    controls = controller.reshape_input(solution)
-
-    def open_loop_policy(t):
-        return controls[t]
-
-    # Build the assumed model 
-    bicycle = KinematicBicycle(params)
-    dynamics_assumed = runge_kutta4(bicycle, ts)
-    #dynamics_assumed = forward_euler(bicycle, ts)
-
-    print(f"--Simulate under the assumed model")
-    x_open_loop_model = simulate(x0, dynamics_assumed, n_steps=N, policy=open_loop_policy)
-
-    # With more accurate predictions: 
-    print(f"--Simulate using more precise integration")
-    dynamics_accurate = exact_integration(bicycle, ts)
-    x_open_loop_exact = simulate(x0, dynamics_accurate, n_steps=N, policy=open_loop_policy)
-
-    print(f"--Plotting the results")
-
-    print(f"---Plot Controls")
-    plot_input_sequence(controls, VehicleParameters())
-    plt.show()
-    print(f"---Plot trajectory under the predictions")
-    plot_state_trajectory(x_open_loop_model, color="tab:blue", label="Predicted")
-    print("---Plot the trajectory under the more accurate model")
-    plot_state_trajectory(x_open_loop_exact, color="tab:red", label="Real")
-    plt.title("Trajectory (integration error)")
-    plt.show()
-
-    print(f"---Plot trajectory under the predictions")
-    plt.figure()
-    plt.plot(rel_error(x_open_loop_model, x_open_loop_exact) * 100)
-    plt.xlabel("Time step")
-    plt.ylabel("$\| x - x_{pred} \| / \| x \| \\times 100$")
-    plt.title("Relative prediction error (integration error) [%]")
-    plt.show()
+def Assignment46():
+    #Assignment44()
+    N = 9
+    Q = cs.diagcat(5, 30, 0.05, 0.01)
+    R = cs.diagcat(0.5, 0.007)
+    Q_add = cs.diagcat(0, 15, 10, 0)
+    Q_N = 5 * Q + Q_add
+    go(N, Q, R, Q_N)
 
 def main():
-    Assignment41()
-    Assignment42()    
-
-    Assignment44()
+    #Assignment41()
+    #Assignment42()    
+    #Assignment44()
+    Assignment45()
+    Assignment46()
 
 if __name__ == "__main__":
     main()

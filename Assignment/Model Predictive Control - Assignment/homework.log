@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.11)  30 NOV 2024 16:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.11)  1 DEC 2024 15:48
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1743,8 +1743,8 @@ Package pdftex.def Info: images/Assignment_42.png  used on input line 607.
 File: lstlang1.sty 2024/09/23 1.10c listings language file
 )
 LaTeX Font Info:    Font shape `T1/pxtt/b/n' in size <8> not available
-(Font)              Font shape `T1/pxtt/bx/n' tried instead on input line 712.
-LaTeX Font Info:    Trying to load font information for T1+pcr on input line 721.
+(Font)              Font shape `T1/pxtt/bx/n' tried instead on input line 722.
+LaTeX Font Info:    Trying to load font information for T1+pcr on input line 731.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
@@ -1760,7 +1760,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 
 [14]
 LaTeX Font Info:    Font shape `T1/pxr/b/n' in size <12> not available
-(Font)              Font shape `T1/pxr/bx/n' tried instead on input line 805.
+(Font)              Font shape `T1/pxr/bx/n' tried instead on input line 815.
 
 
 [15]
@@ -1776,13 +1776,13 @@ Package rerunfilecheck Info: File `homework.out' has not changed.
 Here is how much of TeX's memory you used:
  37476 strings out of 473362
  715163 string characters out of 5725050
- 1356912 words of memory out of 5000000
+ 1354428 words of memory out of 5000000
  59397 multiletter control sequences out of 15000+600000
  624654 words of font info for 418 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  99i,13n,107p,1083b,1363s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/pxex.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/pxsy.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/pxsyb.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpcxr.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpxmi.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpxr.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpxsc.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/txfonts/t1xbtt.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/courier/ucrro8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on homework.pdf (16 pages, 737933 bytes).
+Output written on homework.pdf (16 pages, 738778 bytes).
 PDF statistics:
  366 PDF objects out of 1000 (max. 8388607)
  301 compressed objects within 4 object streams
