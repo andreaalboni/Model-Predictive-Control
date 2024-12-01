@@ -210,8 +210,8 @@ def Assignment12():
     plt.ylabel("Value Function")
     plt.ylim(0, 2000)
 
-    filename = "a.png"
-    plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
+    #filename = "Assignment_12.png"
+    #plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
 
     plt.show()
 

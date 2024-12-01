@@ -78,6 +78,7 @@ def alpha(H: np.ndarray, h: np.ndarray, shape_matrix: np.ndarray) -> float:
         h_i = H[i,:]
         alpha = h[i]**2/(h_i @ la.inv(shape_matrix) @ h_i.T)
         alphas.append(alpha)
+    print("alphas:", alphas)
     return min(alphas)
 
 def method2(A: np.ndarray, B: np.ndarray, Hx: np.ndarray, hx: np.ndarray, Hu: np.ndarray, hu: np.ndarray):
@@ -131,16 +132,20 @@ def Assignment32():
     Xk = Polyhedron.from_inequalities(H, h)
     plot_polytope(Xk, color='b', label="$X_k$")
 
+    _ = A.T@P[0]@A-P[0]-(A.T@P[0]@B)@la.inv(R + B.T@P[0]@B)@(B.T@P[0]@A)
+    print("DARE result:", _)
+    
     # Method 1: Using the ellipsoid
-    shape_matrix = Q
+    shape_matrix = P[0]
     center = np.array([0, 0])
     alpha_ellipsoid = alpha(H, h, shape_matrix)
-    ellipsoid = Ellipsoid(shape_matrix/alpha_ellipsoid, center)
+    print("alpha:", alpha_ellipsoid)
+    ellipsoid = Ellipsoid(shape_matrix, center)
     plot_ellipsoid(ellipsoid, color='violet', label="$\epsilon$")
 
     # Method 2: Solving a convex optimization problem
-    Hu = np.vstack(([1], [-1]))
-    P, K = method2(A, B, Hx, hx, Hu, hu)
+    #Hu = np.vstack(([1], [-1]))
+    #P, K = method2(A, B, Hx, hx, Hu, hu)
 
     plt.legend()
     plt.xlabel("$x_1$")
