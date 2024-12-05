@@ -1,10 +1,11 @@
 import numpy as np
 import numpy.random as npr
 import casadi as cs
-
+from rcracers.simulator.core import rk4
 import matplotlib.pyplot as plt
 
 from problem import (
+    Config,
     get_system_equations,
     get_linear_dynamics,
     build_mhe,
@@ -17,25 +18,33 @@ from problem import (
 
 class EKF:
     def __init__(self) -> None:
-        """Create an instance of this `EKF`.
-        TODO: Pass required arguments. You can use the output of
-            `get_linear_dynamics`.
-        """
-        print("UNIMPLEMENTED: EKF.")
-        print("Try using: `get_linear_dynamics`:")
-        print(get_linear_dynamics.__doc__)
+        # Create an instance of this `EKF`
+        self.fs, self.hs = get_system_equations(symbolic=True, noise=True)
+        self.A, self.G, self.C = get_linear_dynamics(self.fs, self.hs)
+        params = Config()
+        self.Q = params.sig_p ** 2 * np.eye(3)
+        self.R = params.sig_w ** 2 * np.eye(1)
+        self.P_hat = params.sig_v ** 2 * np.eye(3)
+        self.x_hat = params.x0_est.reshape(-1, 1)  # Ensure x_hat is a column vector
 
     def __call__(self, y: np.ndarray, log: LOGGER):
-        """Process a measurement
-            TODO: Implement EKF using the linearization produced by
-                `get_linear_dynamics`.
+        A = self.A
+        G = self.G
+        C = self.C
+        Q = self.Q
+        R = self.R
+        P = self.P_hat
 
-        :param y: the measurement
-        :param log: the logger for output
-        """
-        # log the state estimate and the measurement for plotting
+        P = P - P @ C(self.x_hat).T @ np.linalg.inv(C(self.x_hat) @ P @ C(self.x_hat).T + R) @ C(self.x_hat) @ P
+        self.L = P @ C(self.x_hat).T @ np.linalg.inv(C(self.x_hat) @ P @ C(self.x_hat).T + R)
+        self.x_hat = self.x_hat + self.L @ (y - self.hs(self.x_hat))
+
+        self.x_hat = self.fs(self.x_hat, 0)
+        self.P_hat = A(self.x_hat, 0) @ P @ A(self.x_hat, 0).T + G(self.x_hat, 0) @ Q @ G(self.x_hat, 0).T
+
+        # Log the state estimate and the measurement for plotting
         log("y", y)
-        log("x", np.zeros(3))
+        log("x", self.x_hat)
 
 
 class MHE:

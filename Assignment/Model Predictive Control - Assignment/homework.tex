@@ -440,7 +440,7 @@ Since we are interested only in the inputs and knowing that $ K = F S^{-1} $:
 		\sigma_E(K^\top H_{u,i}) &= \sigma_E(S^{-1} F^\top H_{u,i}) \\
 								 &= \Big( H_{u,i}^\top F S^{-1} S S^{-1} F^\top H_{u,i} \Big)^{1/2} \leq g_{u,i} = h_{u,i} \\
 								 &= \Big( H_{u,i}^\top F S^{-1} F^\top H_{x,i} \Big) \leq {h^2}_{u,i} \\
-								 &\implies h_{u,i}^2 - H_{u,i}^\top F P F^\top H_{u,i} \preceq 0, \quad \forall i = 1, \dots, m_{u}
+								 &\implies h_{u,i}^2 - H_{u,i}^\top F P F^\top H_{u,i} \succeq 0, \quad \forall i = 1, \dots, m_{u}
 	\end{aligned}
 \end{equation}
 Applying the Schur complement lemma, we obtain the desired LMI:

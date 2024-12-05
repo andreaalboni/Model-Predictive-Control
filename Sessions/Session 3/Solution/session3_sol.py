@@ -267,6 +267,7 @@ def exercise5():
     lqr_solution = dlqr(problem.A, problem.B, problem.Q, problem.R)
     print("--Computing positive invariant set")
     Xf = positive_invariant_set(problem, lqr_solution.K).solution 
+    print(Polyhedron.vertices(Xf))
 
     for N in [5, 10, 20]:
         run_mpc_simulation(problem, lqr_solution=lqr_solution, Xf=Xf, N=N)

@@ -1,6 +1,4 @@
-import os
-import sys
-import math 
+import math, sys, os 
 import numpy as np
 import casadi as cs 
 from time import perf_counter
@@ -389,7 +387,7 @@ def main():
     #Assignment41()
     #Assignment42()    
     #Assignment44()
-    Assignment45()
+    #Assignment45()
     Assignment46()
 
 if __name__ == "__main__":
