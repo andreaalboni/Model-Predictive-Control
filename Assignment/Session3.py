@@ -165,13 +165,13 @@ def Assignment32():
     plot_polytope(Xk, color='cyan', label="$X_k$")
 
     # Xf from vertices (obtained from prof solution)
-    vertices = np.array([[-0.29191581, 4.30638603],
-                        [1., 0.],
-                        [1., -3.19817705],
-                        [ -8.12357778, 7.96519903],
-                        [-10.13123932, 16.34553025]])
-    Xf = Polyhedron.from_generators(vertices)
-    plot_polytope(Xf, color='black', label="$X_f$")
+    #vertices = np.array([[-0.29191581, 4.30638603],
+    #                    [1., 0.],
+    #                    [1., -3.19817705],
+    #                    [ -8.12357778, 7.96519903],
+    #                    [-10.13123932, 16.34553025]])
+    #Xf = Polyhedron.from_generators(vertices)
+    #plot_polytope(Xf, color='black', label="$X_f$")
     
     # Method 1: Using the ellipsoid
     shape_matrix = P[0]
@@ -180,15 +180,13 @@ def Assignment32():
     ellipsoid = Ellipsoid(shape_matrix/alpha_ellipsoid, center)
     plot_ellipsoid(ellipsoid, color='violet', label="$\epsilon$")
 
-    # Method 2: Solving a convex optimization problem
-    #Hu = np.vstack(([1], [-1]))
-    #P, K = method2(A, B, Hx, hx, Hu, hu)
-
+    plt.title("Ellipsoid invariant set")
     plt.legend()
     plt.xlabel("$x_1$")
     plt.ylabel("$x_2$")
+    #filename = f"Assignment_32.png"
+    #plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
     plt.show()
-
 
 def Assignment37():
     A, B, Q, R = setup()
@@ -204,7 +202,7 @@ def Assignment37():
 
     #ellipsoid = Ellipsoid(la.inv(S), np.array([0, 0]))
     #plot_ellipsoid(ellipsoid, color='purple', label="$\epsilon$")
-#
+
     ## Xf from vertices (obtained from prof solution)
     #vertices = np.array([[-0.29191581, 4.30638603],
     #                    [1., 0.],
@@ -213,14 +211,14 @@ def Assignment37():
     #                    [-10.13123932, 16.34553025]])
     #Xf = Polyhedron.from_generators(vertices)
     #plot_polytope(Xf, color='black', label="$X_f$")
-#
+
     #plt.legend()
     #plt.xlabel("$x_1$")
     #plt.ylabel("$x_2$")
     #plt.show()
 
 def main():
-    #Assignment32()
+    Assignment32()
     Assignment37()
 
 if __name__ == "__main__": 
