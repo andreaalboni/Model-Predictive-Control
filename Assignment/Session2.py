@@ -156,7 +156,7 @@ def Assignment24():
         #plt.xlim(-10.5, 1.5)
         plt.legend()
 
-        #filename = f"Plot_Horizon{N}.png"
+        #filename = f"Assignment_24_N{N}.png"
         #plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
 
         plt.show()

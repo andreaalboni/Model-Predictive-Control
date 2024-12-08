@@ -132,8 +132,7 @@ def max_vol_ellipsoid(A: np.ndarray, B: np.ndarray, K: np.ndarray, Hx: np.ndarra
         h_i = Hu[i,:]
         print("h_i: ", h_i.shape)
         print("F: ", F.shape)
-        print((h_i.T@F).shape)
-        print(((h_i.T@F).T).shape)
+        print("S: ", S.shape)
         schur_matrix = np.array([[hu[i] ** 2, h_i.T @ F], [(h_i.T @ F).T, S]])
         print("schur matrix: ", schur_matrix.shape)
         constraints.append(schur_matrix >= 0)

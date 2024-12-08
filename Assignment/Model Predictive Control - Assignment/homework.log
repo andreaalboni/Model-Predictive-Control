@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.11)  4 DEC 2024 12:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.11)  8 DEC 2024 10:16
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1693,58 +1693,77 @@ Package pdftex.def Info: images/Assignment_12.png  used on input line 84.
 [2 <./images/Assignment_12.png>]
 
 [3]
+<images/Assignment_24_N2.png, id=98, 406.67361pt x 327.48634pt>
+File: images/Assignment_24_N2.png Graphic file (type png)
+<use images/Assignment_24_N2.png>
+Package pdftex.def Info: images/Assignment_24_N2.png  used on input line 217.
+(pdftex.def)             Requested size: 213.39568pt x 171.84296pt.
+<images/Assignment_24_N5.png, id=99, 406.67361pt x 327.48634pt>
+File: images/Assignment_24_N5.png Graphic file (type png)
+<use images/Assignment_24_N5.png>
+Package pdftex.def Info: images/Assignment_24_N5.png  used on input line 224.
+(pdftex.def)             Requested size: 213.39568pt x 171.84296pt.
+
 
 [4]
+<images/Assignment_24_N10.png, id=109, 406.67361pt x 327.48634pt>
+File: images/Assignment_24_N10.png Graphic file (type png)
+<use images/Assignment_24_N10.png>
+Package pdftex.def Info: images/Assignment_24_N10.png  used on input line 234.
+(pdftex.def)             Requested size: 213.39568pt x 171.84296pt.
 
-[5]
+
+[5 <./images/Assignment_24_N2.png> <./images/Assignment_24_N5.png> <./images/Assignment_24_N10.png>]
 
 [6]
 
 [7]
 
 [8]
+
+[9]
 \pwid=\skip134
 \phei=\skip135
 \cw=\skip136
 \ch=\skip137
-<figures/covering_circles2.pdf, id=144, 143.3365pt x 85.9471pt>
+<figures/covering_circles2.pdf, id=163, 143.3365pt x 85.9471pt>
 File: figures/covering_circles2.pdf Graphic file (type pdf)
 <use figures/covering_circles2.pdf>
-Package pdftex.def Info: figures/covering_circles2.pdf  used on input line 528.
+Package pdftex.def Info: figures/covering_circles2.pdf  used on input line 552.
 (pdftex.def)             Requested size: 128.0387pt x 76.77724pt.
-<figures/covering_circles3.pdf, id=145, 146.77536pt x 79.90753pt>
+<figures/covering_circles3.pdf, id=164, 146.77536pt x 79.90753pt>
 File: figures/covering_circles3.pdf Graphic file (type pdf)
 <use figures/covering_circles3.pdf>
-Package pdftex.def Info: figures/covering_circles3.pdf  used on input line 528.
+Package pdftex.def Info: figures/covering_circles3.pdf  used on input line 552.
 (pdftex.def)             Requested size: 128.0387pt x 69.7104pt.
-<figures/covering_circles5.pdf, id=146, 152.73361pt x 76.35526pt>
+<figures/covering_circles5.pdf, id=165, 152.73361pt x 76.35526pt>
 File: figures/covering_circles5.pdf Graphic file (type pdf)
 <use figures/covering_circles5.pdf>
-Package pdftex.def Info: figures/covering_circles5.pdf  used on input line 528.
+Package pdftex.def Info: figures/covering_circles5.pdf  used on input line 552.
 (pdftex.def)             Requested size: 128.0387pt x 64.01561pt.
-<images/Assignment_41.png, id=148, 321.6015pt x 327.48634pt>
+<images/Assignment_41.png, id=167, 321.6015pt x 327.48634pt>
 File: images/Assignment_41.png Graphic file (type png)
 <use images/Assignment_41.png>
-Package pdftex.def Info: images/Assignment_41.png  used on input line 569.
+Package pdftex.def Info: images/Assignment_41.png  used on input line 593.
 (pdftex.def)             Requested size: 213.39568pt x 217.30095pt.
 
 
-[9 <./figures/covering_circles2.pdf> <./figures/covering_circles3.pdf> <./figures/covering_circles5.pdf>]
-<images/Assignment_42.png, id=190, 321.6015pt x 327.48634pt>
+[10 <./figures/covering_circles2.pdf> <./figures/covering_circles3.pdf> <./figures/covering_circles5.pdf>]
+<images/Assignment_42.png, id=208, 321.6015pt x 327.48634pt>
 File: images/Assignment_42.png Graphic file (type png)
 <use images/Assignment_42.png>
-Package pdftex.def Info: images/Assignment_42.png  used on input line 607.
+Package pdftex.def Info: images/Assignment_42.png  used on input line 631.
 (pdftex.def)             Requested size: 213.39568pt x 217.30095pt.
 
 
-[10 <./images/Assignment_41.png>]
+[11 <./images/Assignment_41.png>]
 
-[11 <./images/Assignment_42.png>] (c:/texlive/2024/texmf-dist/tex/latex/listings/lstlang1.sty
+[12 <./images/Assignment_42.png>] (c:/texlive/2024/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2024/09/23 1.10c listings language file
 )
 LaTeX Font Info:    Font shape `T1/pxtt/b/n' in size <8> not available
-(Font)              Font shape `T1/pxtt/bx/n' tried instead on input line 722.
-LaTeX Font Info:    Trying to load font information for T1+pcr on input line 731.
+(Font)              Font shape `T1/pxtt/bx/n' tried instead on input line 746.
+LaTeX Font Info:    Trying to load font information for T1+pcr on input line 755.
  (c:/texlive/2024/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
@@ -1754,18 +1773,18 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             See the microtype manual for details.
 
 
-[12]
-
 [13]
 
 [14]
-LaTeX Font Info:    Font shape `T1/pxr/b/n' in size <12> not available
-(Font)              Font shape `T1/pxr/bx/n' tried instead on input line 815.
-
 
 [15]
+LaTeX Font Info:    Font shape `T1/pxr/b/n' in size <12> not available
+(Font)              Font shape `T1/pxr/bx/n' tried instead on input line 839.
 
-[16] (./homework.aux)
+
+[16]
+
+[17] (./homework.aux)
  ***********
 LaTeX2e <2024-11-01>
 L3 programming layer <2024-11-02>
@@ -1774,18 +1793,18 @@ Package rerunfilecheck Info: File `homework.out' has not changed.
 (rerunfilecheck)             Checksum: 677584DC16FE6E70164ACD212DC95CB0;1599.
  ) 
 Here is how much of TeX's memory you used:
- 37476 strings out of 473362
- 715163 string characters out of 5725050
- 1354428 words of memory out of 5000000
- 59397 multiletter control sequences out of 15000+600000
+ 37506 strings out of 473362
+ 716061 string characters out of 5725050
+ 1354821 words of memory out of 5000000
+ 59424 multiletter control sequences out of 15000+600000
  624654 words of font info for 418 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  99i,13n,107p,1083b,1363s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/pxex.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/pxsy.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/pxsyb.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpcxr.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpxmi.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpxr.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpxsc.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/txfonts/t1xbtt.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/courier/ucrro8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on homework.pdf (16 pages, 738778 bytes).
+Output written on homework.pdf (17 pages, 1585350 bytes).
 PDF statistics:
- 366 PDF objects out of 1000 (max. 8388607)
- 301 compressed objects within 4 object streams
- 122 named destinations out of 1000 (max. 500000)
- 114811 words of extra memory for PDF output out of 128383 (max. 10000000)
+ 384 PDF objects out of 1000 (max. 8388607)
+ 312 compressed objects within 4 object streams
+ 125 named destinations out of 1000 (max. 500000)
+ 114826 words of extra memory for PDF output out of 128383 (max. 10000000)
 

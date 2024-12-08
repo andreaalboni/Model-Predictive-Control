@@ -205,13 +205,37 @@ Therefore, the constraint that guarantees that there will always exist a control
 	and draw the boundary of the constraint you derived in \cref{ex:sess2-constraint}. 
 	\textbf{Remark.} You only have to check the initial feasibility of the MPC problem, not recursive feasibility.
 \end{assignment}
-
 \begin{flushleft}
-TO FIX.
-CHECK CODE TOO.
-ha detto che grafico sembra ok, ha consigliato di non discretizzare il confine (cosa che già non faccio, quindi indagare), gli sembra strano che alcuni punti sotto il nostro constraint risultino comunque rossi.
-per il tempo di esecuzione ha consigliato di ridurre la griglia di discretizzazione (from 40x40 to 30x30).
+	The cyan curve, in Figure \ref{fig:assignment2_4_1}, \ref{fig:assignment2_4_2} and \ref{fig:assignment2_4_3}, represents a derived constraint, denoting the boundary for feasible initial positions and velocities. States below this boundary ensure that the vehicle can decelerate and come to a complete stop within the allowed constraints. Thus, it is expected that only states below this line are classified as feasible initial states, as they satisfy the physical and control limitations of the system.
+
+	From figure \ref{fig:assignment2_4_1}, \ref{fig:assignment2_4_2} and \ref{fig:assignment2_4_3} it can be seen that the number of feasible initial states decreases as the prediction horizon $N$ increases. This phenomenon arises because, with a longer prediction horizon, the Model Predictive Control (MPC) algorithm accounts for future constraints over a longer period, leading to more conservative behavior. Specifically, the system becomes increasingly aware that with the minimum allowable braking input of $u_{min}=-5$, the car will not be able to stop in time if the initial velocity exceed a certain threshold, cyan line, with respect to the initial position.
 \end{flushleft}
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/Assignment_24_N2.png}
+        \caption{$N$ = 2}
+        \label{fig:assignment2_4_1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/Assignment_24_N5.png}
+        \caption{$N$ = 5}
+        \label{fig:assignment2_4_2}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/Assignment_24_N10.png}
+        \caption{$N$ = 10}
+        \label{fig:assignment2_4_3}
+    \end{minipage}
+\end{figure}
 
 
 
