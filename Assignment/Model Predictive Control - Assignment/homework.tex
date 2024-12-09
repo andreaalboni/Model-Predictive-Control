@@ -206,10 +206,13 @@ Therefore, the constraint that guarantees that there will always exist a control
 	\textbf{Remark.} You only have to check the initial feasibility of the MPC problem, not recursive feasibility.
 \end{assignment}
 \begin{flushleft}
-	The cyan curve, in Figure \ref{fig:assignment2_4_1}, \ref{fig:assignment2_4_2} and \ref{fig:assignment2_4_3}, represents a derived constraint, denoting the boundary for feasible initial positions and velocities. States below this boundary ensure that the vehicle can decelerate and come to a complete stop within the allowed constraints. Thus, it is expected that only states below this line are classified as feasible initial states, as they satisfy the physical and control limitations of the system.
-
-	From figure \ref{fig:assignment2_4_1}, \ref{fig:assignment2_4_2} and \ref{fig:assignment2_4_3} it can be seen that the number of feasible initial states decreases as the prediction horizon $N$ increases. This phenomenon arises because, with a longer prediction horizon, the Model Predictive Control (MPC) algorithm accounts for future constraints over a longer period, leading to more conservative behavior. Specifically, the system becomes increasingly aware that with the minimum allowable braking input of $u_{min}=-5$, the car will not be able to stop in time if the initial velocity exceed a certain threshold, cyan line, with respect to the initial position.
+	The cyan curve, in figure \ref{fig:assignment2_4_1}, \ref{fig:assignment2_4_2} and \ref{fig:assignment2_4_3}, represents the derived constraint, denoting the boundary for feasible initial points given the initial velocities. 
+	States below this boundary ensure that the vehicle can decelerate and come to a complete stop within the allowed constraints, having a maximum final position $p_{max}=1$. 
+	Thus, it is expected that only states below this line are classified as feasible initial states, as they satisfy the physical and control limitations of the system.
 \end{flushleft}
+From figure \ref{fig:assignment2_4_1}, \ref{fig:assignment2_4_2} and \ref{fig:assignment2_4_3} it can be seen that the number of feasible initial states decreases as the prediction horizon $N$ increases. 
+This phenomenon arises because, with a longer prediction horizon, the Model Predictive Control (MPC) algorithm accounts for future constraints over a longer period. 
+Specifically, the system becomes increasingly aware that with the minimum allowable braking input of $u_{min}=-5$, the car will not be able to stop in time if the initial velocity exceed a certain threshold, cyan line, with respect to the initial position.
 \begin{figure}[H]
     \centering
     \begin{minipage}{0.5\textwidth}
@@ -226,7 +229,6 @@ Therefore, the constraint that guarantees that there will always exist a control
         \label{fig:assignment2_4_2}
     \end{minipage}
 \end{figure}
-
 \begin{figure}[H]
     \centering
     \begin{minipage}{0.5\textwidth}
@@ -297,6 +299,20 @@ Let $K \in \R^{m \times n}$ furthermore be a candidate state feedback gain.
 Our goal is to determine 
 $P$ and $K$ to obtain the ``largest'' possible positive invariant set for 
 $x_{t+1} = A x_t + B u_t$ under the policy $u_t = K x_t$.
+
+
+\begin{flushleft}
+	In figure \ref{fig:assignment3_2}, the ellipsoidal set $E$ is shown in violet, while the polyhedral set $X$ is represented in cyan. 
+\end{flushleft}
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/Assignment_32.png}
+        \caption{Ellipsoidal set}
+        \label{fig:assignment3_2}
+    \end{minipage}
+\end{figure}
 
 
 \begin{assignment}
@@ -711,10 +727,18 @@ The euclidean norm squared is a convex function, the negative of a convex functi
 	Optionally, you can also generate an animation using \texttt{given.animation}, but this is 
 	not a deliverable.
 	(see the solution of the exercise session for some example code. You can use the argument \texttt{obstacle\_positions} to visualize the obstacle.)
-
 \end{assignment}
+\begin{flushleft}
+	As can be seen in Figure \ref{fig:assignment4_4}, using the default values for $Q$, $R$, and $N$, the vehicle is not fully parked within the parking spot.
+\end{flushleft}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/Assignment_44.png}
+    \caption{Parking trajectory using default parameters}
+    \label{fig:assignment4_4}
+\end{figure}
 
-		
+
 
 \begin{assignment}
 	Play around with the tuning of $Q$, $R$, $N$ or other controller parameters (perhaps even $\nc$, feel free to get creative)
@@ -729,9 +753,14 @@ The euclidean norm squared is a convex function, the negative of a convex functi
 	N -> più N è grande, più la macchina si avvicina alla posizione desiderata (centro del parcheggio, (0,0)), ma maggiore è il computational cost e time.
 
 	Q -> cambiare i primi due elementi sulla diagonale di Q aiuta, stiamo aumentando il costo legato alla posizione in x e in y, quindi la macchina tenderà a muoversi in quelle direzioni. Anche cambiare il terzo (relativo allo yaw) può aiutare.
-
-
 \end{flushleft}
+\begin{itemize}
+    \item $n_c$: This parameter affects how closely the car passes by the parked car. Increasing the number of circles improves the approximation of the car by the circles, allowing the car to pass closer to the parked car.
+    
+    \item $N$: A larger prediction horizon $N$ allows the car to get closer to the desired position (the center of the parking spot $(0,0)$). However, this also increases the computational cost and time.
+
+    \item $Q$: Modifying the first two elements on the diagonal of $Q$ helps by increasing the cost associated with the position in $x$ and $y$. Consequently, the car will tend to improve along those directions. Additionally, changing the third element (related to the $yaw$) can also be beneficial.
+\end{itemize}
 
 
 

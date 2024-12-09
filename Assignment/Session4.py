@@ -311,6 +311,8 @@ def go(N, Q=cs.diagcat(1, 3, 0.1, 0.01), R=cs.diagcat(1, 0.01), Q_N=5*cs.diagcat
     # Plot the parked car
     parkedcar_state = np.array([[0.25, 0., 0., 0.] for _ in range(101)])
     plot_state_trajectory(parkedcar_state, color="gray", label="Parked car")
+    #filename = f"Assignment_44.png"
+    #plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
     plt.show()
 
     # According to chatgpt to be considered real time execution, the solver time should be less than 0.75 * ts 
@@ -386,7 +388,7 @@ def Assignment46():
 def main():
     #Assignment41()
     #Assignment42()    
-    #Assignment44()
+    Assignment44()
     #Assignment45()
     Assignment46()
 
