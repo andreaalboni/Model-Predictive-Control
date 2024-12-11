@@ -215,14 +215,14 @@ This phenomenon arises because, with a longer prediction horizon, the Model Pred
 Specifically, the system becomes increasingly aware that with the minimum allowable braking input of $u_{min}=-5$, the car will not be able to stop in time if the initial velocity exceed a certain threshold, cyan line, with respect to the initial position.
 \begin{figure}[H]
     \centering
-    \begin{minipage}{0.5\textwidth}
+    \begin{minipage}{0.7\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/Assignment_24_N2.png}
         \caption{$N$ = 2}
         \label{fig:assignment2_4_1}
     \end{minipage}
     \hfill
-    \begin{minipage}{0.5\textwidth}
+    \begin{minipage}{0.7\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/Assignment_24_N5.png}
         \caption{$N$ = 5}
@@ -231,7 +231,7 @@ Specifically, the system becomes increasingly aware that with the minimum allowa
 \end{figure}
 \begin{figure}[H]
     \centering
-    \begin{minipage}{0.5\textwidth}
+    \begin{minipage}{0.7\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/Assignment_24_N10.png}
         \caption{$N$ = 10}
@@ -285,28 +285,24 @@ the session.
 	(You can use the given \texttt{Ellipsoid} class we provide,
 	together with the function \texttt{visualization.plot\_ellipsoid} for this)
 	together with the polyhedral set $\{ x \in \R^n \mid x \in X,\; Kx \in U \}$.
-	Is the obtained ellipsoidal set a valid terminal set for the MPC problem?
+	Is the obtained ellipsoidal set a valid terminal set for the MPC problem? \\
+
+	Alternatively, we can more directly encode the requirements for the invariant set and solve a convex optimization problem 
+	to find it. 
+	Let $E = \{ x \in \R^n \mid x^\top P x \leq 1 \}$ denote our candidate set, where 
+	now $P$ is the positive definite shape matrix. 
+	Let $K \in \R^{m \times n}$ furthermore be a candidate state feedback gain.
+	Our goal is to determine 
+	$P$ and $K$ to obtain the ``largest'' possible positive invariant set for 
+	$x_{t+1} = A x_t + B u_t$ under the policy $u_t = K x_t$.
 \end{assignment}
-
-
-Alternatively, we can more directly encode the requirements for the 
-invariant set and solve a convex optimization problem 
-to find it. 
-
-Let $E = \{ x \in \R^n \mid x^\top P x \leq 1 \}$ denote our candidate set, where 
-now $P$ is the positive definite shape matrix. 
-Let $K \in \R^{m \times n}$ furthermore be a candidate state feedback gain.
-Our goal is to determine 
-$P$ and $K$ to obtain the ``largest'' possible positive invariant set for 
-$x_{t+1} = A x_t + B u_t$ under the policy $u_t = K x_t$.
-
-
 \begin{flushleft}
 	In figure \ref{fig:assignment3_2}, the ellipsoidal set $E$ is shown in violet, while the polyhedral set $X$ is represented in cyan. 
+	To be highligthed, it touches ONE boundary of the polyhedral set.
 \end{flushleft}
 \begin{figure}[H]
     \centering
-    \begin{minipage}{0.5\textwidth}
+    \begin{minipage}{0.7\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/Assignment_32.png}
         \caption{Ellipsoidal set}
@@ -503,8 +499,17 @@ Applying the Schur complement lemma, we obtain the desired LMI:
 	Implement this problem using \texttt{cvxpy} and plot the resulting ellipsoid (using the given utility code as before.)
 \end{assignment}
 \begin{flushleft}
-	TO BE DONE
+	TO BE DONE -> to be highligthed that the ellipsoid touches TWO borders of the polytope
 \end{flushleft}
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.7\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/Assignment_37.png}
+        \caption{Ellipsoidal set}
+        \label{fig:assignment3_7}
+    \end{minipage}
+\end{figure}
 
 
 
@@ -606,7 +611,7 @@ Moroever, the radius of the circles, applying the Pitagora theorem, can be expre
 Below, Figure \ref{fig:assignment4_1}, a picture of the vehicle covered by 3 circles is shown.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/Assignment_41.png}
+    \includegraphics[width=0.7\textwidth]{images/Assignment_41.png}
     \caption{Vehicle covered by 3 circles}
     \label{fig:assignment4_1}
 \end{figure}
@@ -644,7 +649,7 @@ And we sum to the circles' local coordinates obtained previously the global coor
 Below, Figure \ref{fig:assignment4_2}, a picture of the vehicle having a yaw, $ \psi = \pi/4 $, positioned in $	p = [2, 2]^\top $ covered by 3 circles is shown.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/Assignment_42.png}
+    \includegraphics[width=0.7\textwidth]{images/Assignment_42.png}
     \caption{Vehicle global coordinates covered by 3 circles}
     \label{fig:assignment4_2}
 \end{figure}

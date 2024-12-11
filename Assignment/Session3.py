@@ -111,38 +111,34 @@ def method2(A: np.ndarray, B: np.ndarray, Hx: np.ndarray, hx: np.ndarray, Hu: np
     return P.value, K.value
 
 def max_vol_ellipsoid(A: np.ndarray, B: np.ndarray, K: np.ndarray, Hx: np.ndarray, hx: np.ndarray, Hu: np.ndarray, hu: np.ndarray):
-    # Decision variables
-    P = cp.Variable((2, 2), PSD=True)  # Positive definite matrix
+    # Decision variable, positive definite matrix
+    S = cp.Variable((A.shape[0], A.shape[1]), PSD=True)
 
     # Objective: Maximize the volume of the ellipsoid (proportional to log(det(P^-1)))
-    S = cp.inv_pos(P)
     objective = cp.Minimize(-cp.log_det(S))
 
     # Constraints
     constraints = []
     F = K @ S
 
-    constraints.append(S >> 0) # Positive definiteness of P
     # Constraints developed in previuos assignments
-    constraints.append(S - (A @ S + B @ F).T @ cp.inv_pos(S) @ (A @ S + B @ F) >> 0)
+    schur_matrix = cp.bmat([[S, (A @ S + B @ F).T], 
+                            [(A @ S + B @ F), S]])
+    constraints.append(schur_matrix >> 0)
+
     for i in range(Hx.shape[0]):
         h_i = Hx[i,:]
         constraints.append(h_i @ S @ h_i.T - hx[i]**2 <= 0)
+
     for i in range(Hu.shape[0]):
-        h_i = Hu[i,:]
-        print("h_i: ", h_i.shape)
-        print("F: ", F.shape)
-        print("S: ", S.shape)
-        schur_matrix = np.array([[hu[i] ** 2, h_i.T @ F], [(h_i.T @ F).T, S]])
-        print("schur matrix: ", schur_matrix.shape)
-        constraints.append(schur_matrix >= 0)
+        h_i = Hu[i,:].reshape(-1, 1)
+        first_raw = cp.hstack([cp.reshape(hu[i]**2, (1, 1)), h_i.T @ S])
+        last_raws = cp.hstack([S.T @ h_i, S])
+        constraints.append(cp.vstack([first_raw, last_raws]) >> 0)
 
     # Solve the problem
     problem = cp.Problem(objective, constraints)
-    problem.solve()
-
-    # Output results
-    print("Optimal S:", S.value)
+    problem.solve(solver='SCS', verbose=False, max_iters=1000000)
 
     return S.value
 
@@ -163,17 +159,7 @@ def Assignment32():
     h = np.hstack((hx, hu))
     Xk = Polyhedron.from_inequalities(H, h)
     plot_polytope(Xk, color='cyan', label="$X_k$")
-
-    # Xf from vertices (obtained from prof solution)
-    #vertices = np.array([[-0.29191581, 4.30638603],
-    #                    [1., 0.],
-    #                    [1., -3.19817705],
-    #                    [ -8.12357778, 7.96519903],
-    #                    [-10.13123932, 16.34553025]])
-    #Xf = Polyhedron.from_generators(vertices)
-    #plot_polytope(Xf, color='black', label="$X_f$")
     
-    # Method 1: Using the ellipsoid
     shape_matrix = P[0]
     center = np.array([0, 0])
     alpha_ellipsoid = alpha(H, h, shape_matrix)
@@ -184,8 +170,8 @@ def Assignment32():
     plt.legend()
     plt.xlabel("$x_1$")
     plt.ylabel("$x_2$")
-    #filename = f"Assignment_32.png"
-    #plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
+    filename = f"Assignment_32.png"
+    plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
     plt.show()
 
 def Assignment37():
@@ -198,24 +184,28 @@ def Assignment37():
     Hu = np.vstack((K[0], -K[0]))
     hu = np.array([10, 20])
 
+    H = np.vstack((Hx, Hu))
+    h = np.hstack((hx, hu))
+    Xk = Polyhedron.from_inequalities(H, h)
+    plot_polytope(Xk, color='cyan', label="$X_k$")
+
     S = max_vol_ellipsoid(A, B, K[0], Hx, hx, Hu, hu)
+    ellipsoid = Ellipsoid(la.inv(S), np.array([0, 0]))
+    plot_ellipsoid(ellipsoid, color='purple', label="$\epsilon$ max volume")
 
-    #ellipsoid = Ellipsoid(la.inv(S), np.array([0, 0]))
-    #plot_ellipsoid(ellipsoid, color='purple', label="$\epsilon$")
+    P, K = riccati_recursion(A, B, R, Q, Q, 10)
+    shape_matrix = P[0]
+    center = np.array([0, 0])
+    alpha_ellipsoid = alpha(H, h, shape_matrix)
+    ellipsoid = Ellipsoid(shape_matrix/alpha_ellipsoid, center)
+    plot_ellipsoid(ellipsoid, color='violet', label="$\epsilon$")
 
-    ## Xf from vertices (obtained from prof solution)
-    #vertices = np.array([[-0.29191581, 4.30638603],
-    #                    [1., 0.],
-    #                    [1., -3.19817705],
-    #                    [ -8.12357778, 7.96519903],
-    #                    [-10.13123932, 16.34553025]])
-    #Xf = Polyhedron.from_generators(vertices)
-    #plot_polytope(Xf, color='black', label="$X_f$")
-
-    #plt.legend()
-    #plt.xlabel("$x_1$")
-    #plt.ylabel("$x_2$")
-    #plt.show()
+    plt.legend()
+    plt.xlabel("$x_1$")
+    plt.ylabel("$x_2$")
+    filename = f"Assignment_37.png"
+    plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
+    plt.show()
 
 def main():
     Assignment32()
