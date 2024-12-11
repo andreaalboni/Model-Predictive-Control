@@ -297,8 +297,12 @@ the session.
 	$x_{t+1} = A x_t + B u_t$ under the policy $u_t = K x_t$.
 \end{assignment}
 \begin{flushleft}
-	In figure \ref{fig:assignment3_2}, the ellipsoidal set $E$ is shown in violet, while the polyhedral set $X$ is represented in cyan. 
-	To be highligthed, it touches ONE boundary of the polyhedral set.
+	The ellipsoidal set $E$, depicted in Figure \ref{fig:assignment3_2} in yellow, is centered in $[0,0]$ and its size is defined by a shape matrix $P$, obtained from the Riccati recursion.
+	Furthermore, by appropriately scaling the ellipsoid using the parameter $\alpha$, the largest possible ellipsoidal set that remains entirely within the polyhedral constraints is obtained. 
+	The result is a maximized terminal set that touches precisely one boundary of the feasible polyhedral set, depicted in black, ensuring optimal usage of the allowable state space.
+	
+	This ellipsoid satisfies the necessary stability and feasibility requirements, since its entirely within $X_k$, additionally its positive invariance ensures 
+	that it serves as a valid terminal set for the Model Predictive Control (MPC) probelm. 
 \end{flushleft}
 \begin{figure}[H]
     \centering
@@ -499,14 +503,25 @@ Applying the Schur complement lemma, we obtain the desired LMI:
 	Implement this problem using \texttt{cvxpy} and plot the resulting ellipsoid (using the given utility code as before.)
 \end{assignment}
 \begin{flushleft}
-	TO BE DONE -> to be highligthed that the ellipsoid touches TWO borders of the polytope
+	The largest invariant set, represented by the ellipsoid, has been computed by: 
+	\begin{equation}
+		\begin{aligned}
+			& \underset{S}{\text{minimize}}
+			& & -\log \det S \\
+			& \text{subject to}
+			& & \text{constraints in \cref{sess3:c1,sess3:c2,sess3:c3}}
+		\end{aligned}
+	\end{equation} 
+	The constraints, elaborated in the previous sections of this assignment, have been formulated as LMI. The resulting ellipsoid is shown in the Figure \ref{fig:assignment3_7}. 
+	Notably, this ellipsoid touches two boundaries of the polyhedral set, demonstrating that it has been scaled to its maximum possible size while remaining entirely within the feasible region. 
+	This ensures the ellipsoid fully satisfies the constraints, serving as the largest admissible invariant set for the MPC problem.
 \end{flushleft}
 \begin{figure}[H]
     \centering
     \begin{minipage}{0.7\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/Assignment_37.png}
-        \caption{Ellipsoidal set}
+        \caption{Ellipsoidal sets}
         \label{fig:assignment3_7}
     \end{minipage}
 \end{figure}

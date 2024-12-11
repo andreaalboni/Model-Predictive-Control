@@ -158,20 +158,20 @@ def Assignment32():
     H = np.vstack((Hx, Hu))
     h = np.hstack((hx, hu))
     Xk = Polyhedron.from_inequalities(H, h)
-    plot_polytope(Xk, color='cyan', label="$X_k$")
+    plot_polytope(Xk, color=(0.,0.,0.), label="$X_k$")
     
     shape_matrix = P[0]
     center = np.array([0, 0])
     alpha_ellipsoid = alpha(H, h, shape_matrix)
     ellipsoid = Ellipsoid(shape_matrix/alpha_ellipsoid, center)
-    plot_ellipsoid(ellipsoid, color='violet', label="$\epsilon$")
+    plot_ellipsoid(ellipsoid, color='yellow', label="$\epsilon$")
 
     plt.title("Ellipsoid invariant set")
     plt.legend()
     plt.xlabel("$x_1$")
     plt.ylabel("$x_2$")
-    filename = f"Assignment_32.png"
-    plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
+    #filename = f"Assignment_32.png"
+    #plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
     plt.show()
 
 def Assignment37():
@@ -187,24 +187,24 @@ def Assignment37():
     H = np.vstack((Hx, Hu))
     h = np.hstack((hx, hu))
     Xk = Polyhedron.from_inequalities(H, h)
-    plot_polytope(Xk, color='cyan', label="$X_k$")
+    plot_polytope(Xk, color='black', label="$X_k$")
 
     S = max_vol_ellipsoid(A, B, K[0], Hx, hx, Hu, hu)
     ellipsoid = Ellipsoid(la.inv(S), np.array([0, 0]))
-    plot_ellipsoid(ellipsoid, color='purple', label="$\epsilon$ max volume")
+    plot_ellipsoid(ellipsoid, color='violet', label="$\epsilon$ max volume")
 
     P, K = riccati_recursion(A, B, R, Q, Q, 10)
     shape_matrix = P[0]
     center = np.array([0, 0])
     alpha_ellipsoid = alpha(H, h, shape_matrix)
     ellipsoid = Ellipsoid(shape_matrix/alpha_ellipsoid, center)
-    plot_ellipsoid(ellipsoid, color='violet', label="$\epsilon$")
+    plot_ellipsoid(ellipsoid, color='yellow', label="$\epsilon$")
 
     plt.legend()
     plt.xlabel("$x_1$")
     plt.ylabel("$x_2$")
-    filename = f"Assignment_37.png"
-    plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
+    #filename = f"Assignment_37.png"
+    #plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
     plt.show()
 
 def main():
