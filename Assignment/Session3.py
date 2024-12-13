@@ -1,9 +1,8 @@
 import numpy as np 
 import cvxpy as cp
+from typing import Tuple
 import numpy.linalg as la
 import matplotlib.pyplot as plt
-from typing import Tuple , Callable
-from scipy.linalg import solve_discrete_are
 from rcracers.utils.geometry import Polyhedron, plot_polytope
 from rcracers.utils.geometry import Ellipsoid, plot_ellipsoid
  
