@@ -224,6 +224,8 @@ def test_linear_system():
     assert result.success, "Newton Lagrange did not converge on a linear system! Something is wrong!"
     assert result.n_its < 2, "Newton Lagrange took more than 2 iterations!"
 
+
+
 def exercise2():
     print("Assignment 6.2.")
     from rcracers.simulator.core import simulate
@@ -237,6 +239,16 @@ def exercise2():
     x0[0] = p.x0
     for k in range(p.N):
         x0[k+1] = np.array(p.f(x0[k], u0[k])).flatten()
+
+    plt.figure()
+    for i in range(x0.shape[1]):
+        plt.plot(x0[:, i], label=f'State {i+1}')
+    plt.xlabel('Time Step')
+    plt.ylabel('State Value')
+    plt.title('State Trajectory')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
     initial_guess = problem.NLIterate(x0, u0, np.zeros_like(x0))
 
     logger = problem.Logger(p, initial_guess)
@@ -245,7 +257,6 @@ def exercise2():
     from given.homework import animate
     plt.rcParams["animation.writer"] = "ffmpeg"
     animate.animate_iterates(logger.iterates, os.path.join(WORKING_DIR, "Assignment6-2"))
-
 
 def exercise34(linesearch:bool):
     print("Assignment 6.3 and 6.4.")
@@ -257,8 +268,22 @@ def exercise34(linesearch:bool):
 
     # Select initial guess by running an open-loop simulation
     #Begin TODO----------------------------------------------------------
-    raise NotImplementedError("Select the initial guess from an open-loop simulation")
-    initial_guess = ... 
+    def open_loop_policy(y, t, log):
+        return np.zeros(p.nu)
+    
+    x_trajectory = simulate(x0=p.x0, dynamics=fw_euler(f, p.Ts), n_steps=p.N, policy=open_loop_policy)
+    plt.figure()
+    for i in range(x_trajectory.shape[1]):
+        plt.plot(x_trajectory[:, i], label=f'State {i+1}')
+    plt.xlabel('Time Step')
+    plt.ylabel('State Value')
+    plt.title('State Trajectory')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    u_trajectory = np.zeros((p.N, p.nu)) 
+    initial_guess = problem.NLIterate(x=x_trajectory, u=u_trajectory, p=np.zeros_like(x_trajectory))
     #End TODO -----------------------------------------------------------
     
     logger = problem.Logger(p, initial_guess)
@@ -289,9 +314,9 @@ def exercise56(regularize=False):
 
 
 if __name__ == "__main__":
-    test_linear_system()
+    #test_linear_system()
     exercise2()
-    #exercise34(False)
+    exercise34(False)
     #exercise34(True)
     #exercise56(regularize=False)
     #exercise56(regularize=True)
