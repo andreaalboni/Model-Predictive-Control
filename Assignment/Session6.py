@@ -77,7 +77,24 @@ def armijo_condition(merit: problem.FullCostFunction, x_plus, u_plus, x, u, dx, 
 
 def armijo_linesearch(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdate, merit: problem.FullCostFunction, *, σ=1e-4) -> problem.NLIterate:
     #Begin TODO----------------------------------------------------------
-    raise NotImplementedError("Line search has not been implemented yet! This is the subject of assignment 6.4. In the meantime, pass ``False`` for this option in the Newton-Lagrange solver.")
+    
+    alpha = 1.0  # Initial step size
+    rho = 0.5    # Step size reduction factor
+    c = 1e-4     # Armijo condition constant
+
+    dx, du, dp = update.dx, update.du, update.p
+
+    while True:
+        xplus = zk.x + alpha * dx
+        uplus = zk.u + alpha * du
+        pplus = zk.p + alpha * dp
+
+        # Check Armijo condition
+        if armijo_condition(merit, xplus, uplus, zk.x, zk.u, dx, du, c, σ, alpha):
+            break
+
+        alpha *= rho
+
     #End TODO -----------------------------------------------------------
     return problem.NLIterate(xplus, uplus, pplus)
 
@@ -192,15 +209,15 @@ def newton_lagrange(p: problem.Problem,
         # In a real application, it's better to check the violation of the KKT conditions.
         # e.g., terminate based on the norm of the gradients of the Lagrangian.
         if np.linalg.norm(update.du.squeeze(), ord=np.inf)/np.linalg.norm(zk.u) < 1e-4:
-            stats.exit_message = "Converged"
+            stats.exit_message = "Converged\n"
             stats.success = True 
             return stats
 
         elif np.any(np.linalg.norm(update.du) > 1e4): 
-            stats.exit_message = "Diverged"
+            stats.exit_message = "Diverged\n"
             return stats
         
-    stats.exit_message = "Maximum number of iterations exceeded"
+    stats.exit_message = "Maximum number of iterations exceeded\n"
     return stats
 
 def exercise1():
@@ -237,22 +254,11 @@ def exercise2():
     x0 = np.zeros((p.N+1, p.ns))
     u0 = np.zeros((p.N, p.nu))
     x0[0] = p.x0
-    for k in range(p.N):
-        x0[k+1] = np.array(p.f(x0[k], u0[k])).flatten()
 
-    plt.figure()
-    for i in range(x0.shape[1]):
-        plt.plot(x0[:, i], label=f'State {i+1}')
-    plt.xlabel('Time Step')
-    plt.ylabel('State Value')
-    plt.title('State Trajectory')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
     initial_guess = problem.NLIterate(x0, u0, np.zeros_like(x0))
-
     logger = problem.Logger(p, initial_guess)
     stats = newton_lagrange(p, initial_guess, log_callback=logger)
+    print(stats.exit_message)
 
     from given.homework import animate
     plt.rcParams["animation.writer"] = "ffmpeg"
@@ -268,22 +274,14 @@ def exercise34(linesearch:bool):
 
     # Select initial guess by running an open-loop simulation
     #Begin TODO----------------------------------------------------------
-    def open_loop_policy(y, t, log):
+    
+    def open_loop_policy():
         return np.zeros(p.nu)
     
     x_trajectory = simulate(x0=p.x0, dynamics=fw_euler(f, p.Ts), n_steps=p.N, policy=open_loop_policy)
-    plt.figure()
-    for i in range(x_trajectory.shape[1]):
-        plt.plot(x_trajectory[:, i], label=f'State {i+1}')
-    plt.xlabel('Time Step')
-    plt.ylabel('State Value')
-    plt.title('State Trajectory')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
-
     u_trajectory = np.zeros((p.N, p.nu)) 
     initial_guess = problem.NLIterate(x=x_trajectory, u=u_trajectory, p=np.zeros_like(x_trajectory))
+    
     #End TODO -----------------------------------------------------------
     
     logger = problem.Logger(p, initial_guess)
@@ -314,9 +312,9 @@ def exercise56(regularize=False):
 
 
 if __name__ == "__main__":
-    #test_linear_system()
+    test_linear_system()
     exercise2()
-    exercise34(False)
-    #exercise34(True)
+    #exercise34(False)
+    exercise34(True)
     #exercise56(regularize=False)
     #exercise56(regularize=True)

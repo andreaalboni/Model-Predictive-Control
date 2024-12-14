@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.11)  14 DEC 2024 11:14
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.11)  14 DEC 2024 17:09
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1805,11 +1805,24 @@ Package microtype Info: Loading generic protrusion settings for font family
 [17]
 LaTeX Font Info:    Font shape `T1/pxr/b/n' in size <12> not available
 (Font)              Font shape `T1/pxr/bx/n' tried instead on input line 888.
+<images/Assignment6-2.pdf, id=308, 462.52798pt x 346.89601pt>
+File: images/Assignment6-2.pdf Graphic file (type pdf)
+<use images/Assignment6-2.pdf>
+Package pdftex.def Info: images/Assignment6-2.pdf  used on input line 938.
+(pdftex.def)             Requested size: 298.75264pt x 224.07703pt.
 
 
 [18]
+<images/Assignment6-3.pdf, id=318, 462.52798pt x 346.89601pt>
+File: images/Assignment6-3.pdf Graphic file (type pdf)
+<use images/Assignment6-3.pdf>
+Package pdftex.def Info: images/Assignment6-3.pdf  used on input line 956.
+(pdftex.def)             Requested size: 298.75264pt x 224.07703pt.
 
-[19] (./homework.aux)
+
+[19 <./images/Assignment6-2.pdf> <./images/Assignment6-3.pdf>]
+
+[20] (./homework.aux)
  ***********
 LaTeX2e <2024-11-01>
 L3 programming layer <2024-11-02>
@@ -1818,18 +1831,18 @@ Package rerunfilecheck Info: File `homework.out' has not changed.
 (rerunfilecheck)             Checksum: 677584DC16FE6E70164ACD212DC95CB0;1599.
  ) 
 Here is how much of TeX's memory you used:
- 37539 strings out of 473362
- 716878 string characters out of 5725050
- 1349946 words of memory out of 5000000
- 59446 multiletter control sequences out of 15000+600000
+ 37560 strings out of 473362
+ 717485 string characters out of 5725050
+ 1350201 words of memory out of 5000000
+ 59464 multiletter control sequences out of 15000+600000
  624849 words of font info for 421 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  99i,13n,107p,1083b,1363s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/pxex.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/pxsy.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/pxsyb.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpcxr.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpxmi.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpxr.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpxsc.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/txfonts/t1xbtt.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/courier/ucrro8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on homework.pdf (19 pages, 2567539 bytes).
+Output written on homework.pdf (20 pages, 2586382 bytes).
 PDF statistics:
- 416 PDF objects out of 1000 (max. 8388607)
- 330 compressed objects within 4 object streams
- 132 named destinations out of 1000 (max. 500000)
- 114841 words of extra memory for PDF output out of 128383 (max. 10000000)
+ 490 PDF objects out of 1000 (max. 8388607)
+ 354 compressed objects within 4 object streams
+ 135 named destinations out of 1000 (max. 500000)
+ 114851 words of extra memory for PDF output out of 128383 (max. 10000000)
 
