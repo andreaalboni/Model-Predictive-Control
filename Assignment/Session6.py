@@ -63,8 +63,8 @@ def lqr_solve_step(
         Ak = np.array(nl.Ak[k])
         Bk = np.array(nl.Bk[k])
         ck = np.array(nl.ck[k].flatten())
-         
-        du[k] = Kk @ dx[k] + ek
+
+        du[k] = ((Kk @ dx[k]).reshape(-1,1) + ek).flatten()
         dx[k + 1] = Ak @ dx[k] + Bk @ du[k] + ck
         p[k+1] = np.array(Pk1 @ dx[k+1] + sk1).flatten()
 
@@ -78,22 +78,40 @@ def armijo_condition(merit: problem.FullCostFunction, x_plus, u_plus, x, u, dx, 
 def armijo_linesearch(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdate, merit: problem.FullCostFunction, *, σ=1e-4) -> problem.NLIterate:
     #Begin TODO----------------------------------------------------------
     
-    alpha = 1.0  # Initial step size
-    rho = 0.5    # Step size reduction factor
-    c = 1e-4     # Armijo condition constant
+    alpha = 1.0     # Initial step size
+    beta = 0.5      # Step size reduction factor
+    c = 10        # Armijo condition constant
 
-    dx, du, dp = update.dx, update.du, update.p
+    dx, du, p = update.dx, update.du, update.p
 
-    while True:
+    for _ in range(100):
         xplus = zk.x + alpha * dx
         uplus = zk.u + alpha * du
-        pplus = zk.p + alpha * dp
+        pplus = alpha * p
 
         # Check Armijo condition
-        if armijo_condition(merit, xplus, uplus, zk.x, zk.u, dx, du, c, σ, alpha):
+        #x_plus = xplus.reshape(-1,1)
+        #u_plus = uplus.reshape(-1,1)
+        #x = zk.x.reshape(-1,1)
+        #u = zk.u.reshape(-1,1)
+        #_dx = dx.reshape(-1,1)
+        #_du = du.reshape(-1,1)
+        #if _ == 0:
+        #    print(x_plus.shape)
+        #    print(u_plus.shape)
+        #    print(x.shape)
+        #    print(u.shape)
+        #    print(_dx.shape)
+        #    print(_du.shape)
+        if armijo_condition(merit, xplus.reshape(-1,1), uplus.reshape(-1,1), 
+                            zk.x.reshape(-1,1), zk.u.reshape(-1,1), 
+                            dx.reshape(-1,1), du.reshape(-1,1), c, σ, alpha):
+            print(f"alpha: {alpha}")
+            print(f"dp: {_}")
             break
+        alpha *= beta
 
-        alpha *= rho
+    xplus[0] = zk.x[0]
 
     #End TODO -----------------------------------------------------------
     return problem.NLIterate(xplus, uplus, pplus)
@@ -124,9 +142,6 @@ def update_iterate(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdate, 
     
     dx, du, p = update.dx, update.du, update.p
     alpha = 1.0
-    
-    if linesearch:
-        alpha = armijo_linesearch(zk, update, merit_function)
     
     xnext = zk.x + alpha * dx
     unext = zk.u + alpha * du
@@ -289,16 +304,33 @@ def exercise34(linesearch:bool):
     final_iterate = newton_lagrange(p, initial_guess, log_callback=logger, cfg=cfg)
     print(final_iterate.exit_message)
     from given.homework import animate
-    animate.animate_iterates(logger.iterates, os.path.join(WORKING_DIR, "Assignment6-4"))
-
+    if not linesearch:
+        animate.animate_iterates(logger.iterates, os.path.join(WORKING_DIR, "Assignment6-3"))
+    else:
+        animate.animate_iterates(logger.iterates, os.path.join(WORKING_DIR, "Assignment6-4"))
 
 def exercise56(regularize=False):
+    from rcracers.simulator.core import simulate
+    f = problem.KinematicBicycle()
+    
     # Build the problem 
     p = problem.ParkingProblem()
 
     # Select initial guess by running an open-loop simulation
     #Begin TODO----------------------------------------------------------
-    raise NotImplementedError("Construct the initial guess for your solver from simulation.")
+    
+    #x0 = np.zeros((p.N+1, p.ns))
+    #u0 = np.zeros((p.N, p.nu))
+    #x0[0] = p.x0
+    #initial_guess = problem.NLIterate(x0, u0, np.zeros_like(x0))
+    
+    def open_loop_policy():
+        return np.zeros(p.nu)
+    
+    x_trajectory = simulate(x0=p.x0, dynamics=fw_euler(f, p.Ts), n_steps=p.N, policy=open_loop_policy)
+    u_trajectory = np.zeros((p.N, p.nu)) 
+    initial_guess = problem.NLIterate(x=x_trajectory, u=u_trajectory, p=np.zeros_like(x_trajectory))
+
     #End TODO -----------------------------------------------------------
 
     logger = problem.Logger(p, initial_guess)
@@ -307,14 +339,14 @@ def exercise56(regularize=False):
     print(final_iterate.exit_message)
 
     from given.homework import animate
-    animate.animate_iterates(logger.iterates, os.path.join(WORKING_DIR, f"Assignment6-4-reg{regularize}"))
+    animate.animate_iterates(logger.iterates, os.path.join(WORKING_DIR, f"Assignment6-5-reg{regularize}"))
     animate.animate_positions(logger.iterates, os.path.join(WORKING_DIR, f"parking_regularize-{regularize}"))
 
 
 if __name__ == "__main__":
-    test_linear_system()
-    exercise2()
+    #test_linear_system()
+    #exercise2()
     #exercise34(False)
-    exercise34(True)
-    #exercise56(regularize=False)
+    #exercise34(True)
+    exercise56(regularize=False)
     #exercise56(regularize=True)

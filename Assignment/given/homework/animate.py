@@ -69,8 +69,11 @@ def animate_positions(its: List[NLIterate], filename: str = "Iterates.gif"):
     ani = FuncAnimation(fig, draw_frame, blit=True, frames=len(its))
     out_path = _prepare_output_path(filename)
 
-    # Set the animation writer to ffmpeg
-    plt.rcParams["animation.writer"] = "ffmpeg"
-    writer = FFMpegWriter(fps=12, metadata=dict(artist='Me'), bitrate=1800)
-    ani.save(out_path, writer=writer)
+    ani = FuncAnimation(fig, draw_frame, blit=True, frames=len(its))
+    out_path = _prepare_output_path(filename)
+    ani.save(out_path, fps=12)
+    # plt.show()
+    draw_frame(len(its)-1)
+    out_path = _prepare_output_path(filename, "pdf")
+    fig.savefig(out_path)
     plt.show()
