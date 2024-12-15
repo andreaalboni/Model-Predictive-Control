@@ -172,7 +172,14 @@ def regularize(qp: problem.NewtonLagrangeQP):
         qp (problem.NewtonLagrangeQP): Linearization of the optimal control problem
     """
     #Begin TODO----------------------------------------------------------
-    raise NotImplementedError("Implement regularization!")
+
+    for _ in range(qp.Qk.shape[0]):
+        Q_bar = qp.Qk[_]
+        _lambda = 1e-6
+        while not is_posdef(Q_bar):
+            Q_bar += _lambda * np.eye(Q_bar.shape[0])
+            _lambda *= 2
+
     #End TODO -----------------------------------------------------------
 
 def newton_lagrange(p: problem.Problem,
@@ -348,5 +355,5 @@ if __name__ == "__main__":
     #exercise2()
     #exercise34(False)
     #exercise34(True)
-    exercise56(regularize=False)
-    #exercise56(regularize=True)
+    #exercise56(regularize=False)
+    exercise56(regularize=True)
