@@ -110,8 +110,8 @@ def Assignment24():
     initial_states_feasible = []
 
     # Generate grid of initial states
-    p0_range = np.linspace(-10, 1, 30)
-    v0_range = np.linspace(0, 25, 30)
+    p0_range = np.linspace(-10, 1, 35)
+    v0_range = np.linspace(0, 25, 35)
     p0, v0 = np.meshgrid(p0_range, v0_range)
     initial_states = np.vstack([p0.ravel(), v0.ravel()]).T
 
@@ -136,9 +136,9 @@ def Assignment24():
         # Plot initial states
         plt.figure()
         if feasible_points.size > 0:
-            plt.scatter(feasible_points[:, 0], feasible_points[:, 1], color='green', marker='o', s=9, label='Feasible')
+            plt.scatter(feasible_points[:, 0], feasible_points[:, 1], color='green', marker='o', s=7, label='Feasible')
         if non_feasible_points.size > 0:
-            plt.scatter(non_feasible_points[:, 0], non_feasible_points[:, 1], color='red', marker='o', s=9, label='Infeasible')
+            plt.scatter(non_feasible_points[:, 0], non_feasible_points[:, 1], color='red', marker='o', s=7, label='Infeasible')
         
         # Plot all the break distances
         #plt.plot(break_distances, mesh, color='cyan', linewidth=2, label='Constraint\'s boundary')
@@ -146,7 +146,7 @@ def Assignment24():
         mask = np.array(break_distances) >= min(p0_range)
         filtered_break_distances = np.array(break_distances)[mask]
         filtered_velocity_mesh = mesh[mask]
-        plt.plot(filtered_break_distances, filtered_velocity_mesh, color='cyan', linewidth=2, label="Constraint's boundary")
+        plt.plot(filtered_break_distances, filtered_velocity_mesh, color='blue', linewidth=2, label="Constraint's boundary")
 
         plt.title("Initial feasibility analysis for MPC of horizon {}".format(N))
         plt.xlabel("Position ($p_0$)")
