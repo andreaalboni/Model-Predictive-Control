@@ -106,7 +106,7 @@ def Assignment24():
     umax = 10.0
     vmin = -20.0
     vmax = 25.0
-    ts = 0.5
+    ts = 0.3
     initial_states_feasible = []
 
     # Generate grid of initial states
