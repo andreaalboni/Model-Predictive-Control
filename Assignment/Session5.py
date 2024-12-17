@@ -1,10 +1,9 @@
 import sys, os
+sys.path.append(os.path.split(__file__)[0])  # Allow relative imports
 import numpy as np
 import numpy.random as npr
 import casadi as cs
-
 import matplotlib.pyplot as plt
-
 from given.problem import (
     system_info,
     get_linear_dynamics,
@@ -17,7 +16,6 @@ from given.problem import (
     LOGGER,
 )
 
-
 def parse_covariances(Q: np.ndarray, R: np.ndarray, P: np.ndarray):
     """Parse covariance arguments."""
     f, h = get_system_equations(symbolic=True, noise=True)
@@ -27,7 +25,6 @@ def parse_covariances(Q: np.ndarray, R: np.ndarray, P: np.ndarray):
         np.eye(nv) * R if isinstance(R, float) else R,
         np.eye(nx) * P if isinstance(P, float) else P,
     )
-
 
 class EKF:
     def __init__(
@@ -68,10 +65,9 @@ class EKF:
         self.x = np.squeeze(cs.DM.full(self.f(_x, w)))
 
         # log results
-        if log is not None:
-            log("y", y)
-            log("x", np.squeeze(_x))
-
+        #if log is not None:
+        #    log("y", y)
+        #    log("x", np.squeeze(_x))
 
 class MHE:
     def __init__(
@@ -81,7 +77,9 @@ class MHE:
         horizon: int,
         *,
         Q: float = 0.002**2,
-        R: float = 0.25**2
+        R: float = 0.25**2,
+        ekf_initial_state: np.ndarray,
+        ekf_clipping: bool = False
     ):
         Q, R, _ = parse_covariances(Q, R, 0.0)
         self.f, self.h = f, h
@@ -94,6 +92,9 @@ class MHE:
 
         self.y = []
         self.solver = self.build(horizon)
+
+        # Initialize EKF
+        self.ekf = EKF(f, h, ekf_initial_state, Q=Q, R=R, clipping=ekf_clipping)
 
     @property
     def nx(self):
@@ -112,10 +113,14 @@ class MHE:
             self.h,
             horizon,
             lbx=self.lbx,
-            ubx=self.ubx
+            ubx=self.ubx,
+            use_prior=True
         )
 
     def __call__(self, y: np.ndarray, log: LOGGER):
+        # Update EKF with new measurement
+        self.ekf(y, log)
+
         # store the new measurement
         self.y.append(y)
         if len(self.y) > self.horizon:
@@ -126,13 +131,16 @@ class MHE:
         if len(self.y) < self.horizon:
             solver = self.build(len(self.y))
 
+        # Use EKF state as initial guess for MHE
+        initial_state = self.ekf.x
+        P = self.ekf.P
+
         # update mhe
-        x, _ = solver(self.y)
+        x, _ = solver(P, initial_state, self.y)
 
         # update log
         log("x", x[-1, :])
         log("y", y)
-
 
 def show_result(t: np.ndarray, x: np.ndarray, x_: np.ndarray):
     _, ax = plt.subplots(1, 1)
@@ -168,8 +176,15 @@ def show_result(t: np.ndarray, x: np.ndarray, x_: np.ndarray):
     ax.spines.top.set_visible(False)
     plt.show()
 
-def part_2():
-    for horizon in [15, 25]:
+
+
+def Assignment51(clipping=False):
+    if not clipping:
+        print("Assignment 5.1:")
+    else:
+        print("\nAssignment 5.4:")
+    
+    for horizon in [10, 25]:
         # problem setup
         cfg = default_config()
         n_steps = 400
@@ -178,7 +193,7 @@ def part_2():
         fs, hs = get_system_equations(symbolic=True, noise=True, Ts=cfg.Ts)
 
         # setup the moving horizon estimator
-        mhe = MHE(fs, hs, horizon=horizon)
+        mhe = MHE(fs, hs, horizon=horizon, ekf_initial_state=cfg.x0_est, ekf_clipping=clipping)
 
         # prepare log
         log = ObserverLog()
@@ -192,5 +207,7 @@ def part_2():
         # plot output in `x` and `log.x`
         show_result(t, x, log.x)
 
+
 if __name__ == "__main__":
-    part_2()
+    Assignment51()
+    Assignment51(clipping=True)

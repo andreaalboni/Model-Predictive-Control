@@ -91,8 +91,8 @@ def armijo_linesearch(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdat
 
         # Check Armijo condition
         if armijo_condition(merit, xplus.reshape(-1,1), uplus.reshape(-1,1), zk.x.reshape(-1,1), zk.u.reshape(-1,1), dx.reshape(-1,1), du.reshape(-1,1), c, σ, alpha):
-            print(f"alpha: {alpha}")
-            print(f"dp: {_}")
+            #print(f"alpha: {alpha}")
+            #print(f"dp: {_}")
             break
         alpha *= beta
     
@@ -341,5 +341,5 @@ if __name__ == "__main__":
     #exercise2()
     #exercise34(False)
     #exercise34(True)
-    #exercise56(regularize=False)
+    exercise56(regularize=False)
     exercise56(regularize=True)

@@ -84,7 +84,9 @@ class MHE:
         horizon: int,
         *,
         Q: float = 0.002**2,
-        R: float = 0.25**2
+        R: float = 0.25**2,
+        ekf_initial_state: np.ndarray,
+        ekf_clipping: bool = False
     ):
         Q, R, _ = parse_covariances(Q, R, 0.0)
         self.f, self.h = f, h
@@ -97,6 +99,9 @@ class MHE:
 
         self.y = []
         self.solver = self.build(horizon)
+
+        # Initialize EKF
+        self.ekf = EKF(f, h, ekf_initial_state, Q=Q, R=R, clipping=ekf_clipping)
 
     @property
     def nx(self):
@@ -115,10 +120,14 @@ class MHE:
             self.h,
             horizon,
             lbx=self.lbx,
-            ubx=self.ubx
+            ubx=self.ubx,
+            use_prior=True
         )
 
     def __call__(self, y: np.ndarray, log: LOGGER):
+        # Update EKF with new measurement
+        self.ekf(y, log)
+
         # store the new measurement
         self.y.append(y)
         if len(self.y) > self.horizon:
@@ -129,8 +138,12 @@ class MHE:
         if len(self.y) < self.horizon:
             solver = self.build(len(self.y))
 
+        # Use EKF state as initial guess for MHE
+        initial_state = self.ekf.x
+        P = self.ekf.P
+
         # update mhe
-        x, _ = solver(self.y)
+        x, _ = solver(P, initial_state, self.y)
 
         # update log
         log("x", x[-1, :])
@@ -203,7 +216,7 @@ def part_2():
     """Implementation for Exercise 2."""
     print("\nExecuting Exercise 2\n" + "-" * 80)
     
-    for horizon in [15, 25]:
+    for horizon in [15, 25, 50]:
         # problem setup
         cfg = default_config()
         n_steps = 400
@@ -212,7 +225,7 @@ def part_2():
         fs, hs = get_system_equations(symbolic=True, noise=True, Ts=cfg.Ts)
 
         # setup the moving horizon estimator
-        mhe = MHE(fs, hs, horizon=horizon)
+        mhe = MHE(fs, hs, horizon=horizon, ekf_initial_state=cfg.x0_est)
 
         # prepare log
         log = ObserverLog()
@@ -228,5 +241,5 @@ def part_2():
 
 
 if __name__ == "__main__":
-    part_1()
+    #part_1()
     part_2()

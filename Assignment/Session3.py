@@ -77,38 +77,6 @@ def alpha(H: np.ndarray, h: np.ndarray, shape_matrix: np.ndarray) -> float:
         alphas.append(alpha)
     return min(alphas)
 
-def method2(A: np.ndarray, B: np.ndarray, Hx: np.ndarray, hx: np.ndarray, Hu: np.ndarray, hu: np.ndarray):
-    # Dimensions
-    n = A.shape[0]  # State dimension
-    m = B.shape[1]  # Input dimension
-
-    # Decision variables
-    P = cp.Variable((n, n), PSD=True)  # Positive definite matrix
-    K = cp.Variable((m, n))            # Feedback gain matrix
-
-    # Objective: Maximize the volume of the ellipsoid (proportional to log(det(P^-1)))
-    objective = cp.Minimize(-cp.log_det(P))
-
-    # Constraints
-    constraints = []
-
-    # 1. Positive definiteness of P
-    constraints.append(P >> 0)
-
-    # 2. Positive invariance condition: (A + BK)^T P (A + BK) - P <= 0
-    M = (A + B @ K).T @ P @ (A + B @ K) - P
-    constraints.append(M << 0)
-
-    # Solve the problem
-    problem = cp.Problem(objective, constraints)
-    problem.solve()
-
-    # Output results
-    print("Optimal P:", P.value)
-    print("Optimal K:", K.value)
-
-    return P.value, K.value
-
 def max_vol_ellipsoid(A: np.ndarray, B: np.ndarray, K: np.ndarray, Hx: np.ndarray, hx: np.ndarray, Hu: np.ndarray, hu: np.ndarray):
     # Decision variable, positive definite matrix
     S = cp.Variable((A.shape[0], A.shape[1]), PSD=True)
@@ -189,6 +157,7 @@ def Assignment37():
     plot_polytope(Xk, color='black', label="$X_k$")
 
     S = max_vol_ellipsoid(A, B, K[0], Hx, hx, Hu, hu)
+    print("Optimal S:", S)
     ellipsoid = Ellipsoid(la.inv(S), np.array([0, 0]))
     plot_ellipsoid(ellipsoid, color='violet', label="$\epsilon$ max volume")
 
