@@ -80,7 +80,7 @@ def armijo_linesearch(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdat
     
     alpha = 1.0     # Initial step size
     beta = 0.5      # Step size reduction factor
-    c = 10        # Armijo condition constant
+    c = 12          # Armijo "strictness" condition constant
 
     dx, du, p = update.dx, update.du, update.p
 
@@ -90,27 +90,12 @@ def armijo_linesearch(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdat
         pplus = alpha * p
 
         # Check Armijo condition
-        #x_plus = xplus.reshape(-1,1)
-        #u_plus = uplus.reshape(-1,1)
-        #x = zk.x.reshape(-1,1)
-        #u = zk.u.reshape(-1,1)
-        #_dx = dx.reshape(-1,1)
-        #_du = du.reshape(-1,1)
-        #if _ == 0:
-        #    print(x_plus.shape)
-        #    print(u_plus.shape)
-        #    print(x.shape)
-        #    print(u.shape)
-        #    print(_dx.shape)
-        #    print(_du.shape)
-        if armijo_condition(merit, xplus.reshape(-1,1), uplus.reshape(-1,1), 
-                            zk.x.reshape(-1,1), zk.u.reshape(-1,1), 
-                            dx.reshape(-1,1), du.reshape(-1,1), c, σ, alpha):
+        if armijo_condition(merit, xplus.reshape(-1,1), uplus.reshape(-1,1), zk.x.reshape(-1,1), zk.u.reshape(-1,1), dx.reshape(-1,1), du.reshape(-1,1), c, σ, alpha):
             print(f"alpha: {alpha}")
             print(f"dp: {_}")
             break
         alpha *= beta
-
+    
     xplus[0] = zk.x[0]
 
     #End TODO -----------------------------------------------------------
@@ -183,9 +168,9 @@ def regularize(qp: problem.NewtonLagrangeQP):
     #End TODO -----------------------------------------------------------
 
 def newton_lagrange(p: problem.Problem,
-         initial_guess = problem.NLIterate, cfg: problem.NewtonLagrangeCfg = None, *,
-         log_callback: Callable = lambda *args, **kwargs: ...
-) -> problem.NewtonLagrangeStats:
+                        initial_guess = problem.NLIterate, cfg: problem.NewtonLagrangeCfg = None, *,
+                        log_callback: Callable = lambda *args, **kwargs: ...
+                    ) -> problem.NewtonLagrangeStats:
     """Newton Lagrange method for nonlinear OCPs
     Args:
         p (problem.Problem): The problem description 
@@ -309,6 +294,7 @@ def exercise34(linesearch:bool):
     logger = problem.Logger(p, initial_guess)
     cfg = problem.NewtonLagrangeCfg(linesearch=linesearch, max_iter=100)
     final_iterate = newton_lagrange(p, initial_guess, log_callback=logger, cfg=cfg)
+    print(f"Using Linesearch? {linesearch}")
     print(final_iterate.exit_message)
     from given.homework import animate
     if not linesearch:
