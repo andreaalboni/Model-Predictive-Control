@@ -7,7 +7,7 @@
   {\Large\scshape}{Session \thesection}{1em}{}
 \title{H0E76A: Model Predictive Control\\\large--- Homework assignments ---}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-\author{Andrea Alboni} 
+\author{Andrea Alboni - r1030437} 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\acyear}{2024-2025}
@@ -49,10 +49,69 @@ Before submitting your final report, make sure that you verify your solutions fr
 \end{assignment}
 
 \begin{flushleft}
-	Done.
+	The goal of this analysis is to compare the performance of finite-horizon controllers $K_N$, computed for various prediction horizons 
+	$N$, with the infinite-horizon Linear Quadratic Regulator (LQR) controller $K_{\infty}$. The infinite-horizon controller is obtained by solving the 
+	Discrete Algebraic Riccati Equation (DARE), which provides the optimal feedback gain $K_{\infty}$ for minimizing the infinite-horizon quadratic cost.
 \end{flushleft}
+\begin{itemize}
+	\item The obtained value of $K_{\infty}$ is:
+	\begin{lstlisting}[style=python]
+		Kinf:  [[1.28645 2.31256]]
+	\end{lstlisting}
 
+	\item 	The analysis demonstrates, and the plots \ref{fig:2x2grid} confirm, that increasing the prediction horizon $N$ improves the performance of the finite-horizon MPC. For small $N$, the controller struggles to approximate the long-term cost-to-go, leading to poor decision-making and significant deviation from the infinite-horizon LQR solution. 
+	However, as $N$ increases, the finite-horizon MPC gradually captures more of the system's future behavior, reducing the mismatch between its terminal cost approximation and the true cost-to-go function. 
+	Ultimately, for sufficiently large $N$, the finite-horizon MPC converges to the infinite-horizon LQR solution, achieving optimal control performance. 
+	
+	The black curves correspond to the real closed-loop trajectories under the finite-horizon controller, while the red curves represent the predicted trajectories at each time step. 
+	For comparison, the blue trajectory represents the infinite-horizon Linear Quadratic Regulator (LQR) controller, which serves as the optimal solution for the system. 
+	\begin{figure}[H]
+		\centering
+		\begin{subfigure}[b]{0.45\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{images/Assignment_11_N4.png}
+			\caption{State trajectory for $N=4$}
+			\label{fig:imgN4}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}[b]{0.45\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{images/Assignment_11_N6.png}
+			\caption{State trajectory for $N=6$}
+			\label{fig:imgN6}
+		\end{subfigure}
+		\vfill
+		\begin{subfigure}[b]{0.45\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{images/Assignment_11_N10.png}
+			\caption{State trajectory for $N=10$}
+			\label{fig:imgN10}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}[b]{0.45\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{images/Assignment_11_N20.png}
+			\caption{State trajectory for $N=20$}
+			\label{fig:imgN20}
+		\end{subfigure}
+		\caption{State trajectories for different horizons}
+		\label{fig:2x2grid}
+	\end{figure}
+\end{itemize}
+For $N=4$, shown in Figure \ref{fig:imgN4}, the MPC trajectories show a significant deviation from 
+the infinite-horizon LQR solution. The real trajectory and predictions fail to converge toward the desired optimal behavior. 
+This happens because a short prediction horizon limits the controller's ability to account for the system's long-term evolution.  
 
+As the prediction horizon increases to $N=6$, Figure \ref{fig:imgN6}, it improves noticeably. 
+The predicted trajectories (red curves) begin to better align with the infinite-horizon LQR solution (blue curve), and the real trajectory starts to resemble the desired behavior. 
+Although some visible deviation remains, the increased horizon length allows the controller to approximate the terminal cost more accurately, providing better foresight into the system's future behavior. 
+This improvement reflects the recursive nature of the cost-to-go function: with a longer prediction horizon, the controller reduces the mismatch between the finite-horizon cost approximation and the true long-term cost-to-go.
+
+For N=10, Figure \ref{fig:imgN10}, the finite-horizon MPC achieves near-optimal behavior, as evidenced by the close overlap between the real and predicted trajectories with the infinite-horizon LQR trajectory. 
+At this horizon length, the MPC solution has almost converged to the optimal control law. 
+The terminal cost and the resulting feedback gain closely approximate those obtained from solving the Discrete Algebraic Riccati Equation (DARE), which characterizes the infinite-horizon optimal solution. 
+
+As N increases, Figure \ref{fig:imgN20} shows a simulation where $N=20$, the terminal cost used in the finite-horizon MPC converges to the true cost-to-go, enabling the MPC to replicate the infinite-horizon behavior.
 
 \begin{assignment}
 	Numerically compare the quality of the finite-horizon LQR controller to the infinite horizon controller. 
@@ -210,7 +269,7 @@ Therefore, the constraint that guarantees that there will always exist a control
 	States below this boundary ensure that the vehicle can decelerate and come to a complete stop within the allowed constraints, having a maximum final position $p_{max}=1$. 
 	Thus, it is expected that only states below this line are classified as feasible initial states, as they satisfy the physical and control limitations of the system.
 \end{flushleft}
-From figure \ref{fig:assignment2_4_1}, \ref{fig:assignment2_4_2} and \ref{fig:assignment2_4_3} it can be seen that the number of feasible initial states decreases as the prediction horizon $N$ increases. 
+From figure \ref{fig:assignment2_4_1}, \ref{fig:assignment2_4_2} and \ref{fig:assignment2_4_3} can be seen that the number of feasible initial states decreases as the prediction horizon $N$ increases. 
 This phenomenon arises because, with a longer prediction horizon, the Model Predictive Control (MPC) algorithm accounts for future constraints over a longer period. 
 Specifically, the system becomes increasingly aware that with the minimum allowable braking input of $u_{min}=-5$, the car will not be able to stop in time if the initial velocity exceed a certain threshold, cyan line, with respect to the initial position.
 \begin{figure}[H]
@@ -862,6 +921,40 @@ x, w = solver(P=np.eye(3), x0=np.zeros(3), y=np.zeros((10, 1)))
     \end{enumerate}
     \solution{See \texttt{MHE} in \texttt{session4\_sol.py}.} 
 \end{assignment}
+\begin{enumerate}
+	\item The prior can be passed to the \texttt{build\_mhe} method as follows:
+	
+	\item Alter
+	
+	\item Plots:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\textwidth]{images/Assignment5_N=10_False.png}
+		\caption{States and their estimation evolution - N = 10}
+		\label{fig:assignment51_2}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\textwidth]{images/Assignment5_N=25_False.png}
+		\caption{States and their estimation evolution - N = 25}
+		\label{fig:assignment51_1}
+	\end{figure}
+	
+	\item Clipping the state estimates in the \emph{EKF} can aid the performance. Plots:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\textwidth]{images/Assignment5_N=10_True.png}
+		\caption{States and their estimation evolution - N = 10 + Clipping}
+		\label{fig:assignment52_1}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\textwidth]{images/Assignment5_N=25_True.png}
+		\caption{States and their estimation evolution - N = 10 + Clipping}
+		\label{fig:assignment52_2}
+	\end{figure}
+\end{enumerate}
+
 
 
 

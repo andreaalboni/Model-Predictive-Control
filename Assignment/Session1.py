@@ -142,6 +142,8 @@ def plot_sim(x0: np.ndarray, A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.
     plt.title(f"State trajectory (real: black | predicted: red | infinite: blue) for N = {horizon}")
     plt.xlabel("Position")
     plt.ylabel("Velocity")
+    filename = f"./Model Predictive Control - Assignment/images/Assignment_11_N{horizon}.png"
+    plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
     plt.show()
 
 def finite_horizon_cost(x0: np.ndarray, A: np.ndarray, B: np.ndarray, K: np.ndarray, Q: np.ndarray, R: np.ndarray, sim_time=10):
@@ -217,8 +219,8 @@ def Assignment12():
 
 
 def main():
-    #Assignment11()
-    Assignment12()
+    Assignment11()
+    #Assignment12()
 
 if __name__ == "__main__": 
     main()

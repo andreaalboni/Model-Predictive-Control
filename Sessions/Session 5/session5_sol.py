@@ -84,9 +84,7 @@ class MHE:
         horizon: int,
         *,
         Q: float = 0.002**2,
-        R: float = 0.25**2,
-        ekf_initial_state: np.ndarray,
-        ekf_clipping: bool = False
+        R: float = 0.25**2
     ):
         Q, R, _ = parse_covariances(Q, R, 0.0)
         self.f, self.h = f, h
@@ -99,9 +97,6 @@ class MHE:
 
         self.y = []
         self.solver = self.build(horizon)
-
-        # Initialize EKF
-        self.ekf = EKF(f, h, ekf_initial_state, Q=Q, R=R, clipping=ekf_clipping)
 
     @property
     def nx(self):
@@ -120,14 +115,10 @@ class MHE:
             self.h,
             horizon,
             lbx=self.lbx,
-            ubx=self.ubx,
-            use_prior=True
+            ubx=self.ubx
         )
 
     def __call__(self, y: np.ndarray, log: LOGGER):
-        # Update EKF with new measurement
-        self.ekf(y, log)
-
         # store the new measurement
         self.y.append(y)
         if len(self.y) > self.horizon:
@@ -138,19 +129,15 @@ class MHE:
         if len(self.y) < self.horizon:
             solver = self.build(len(self.y))
 
-        # Use EKF state as initial guess for MHE
-        initial_state = self.ekf.x
-        P = self.ekf.P
-
         # update mhe
-        x, _ = solver(P, initial_state, self.y)
+        x, _ = solver(self.y)
 
         # update log
         log("x", x[-1, :])
         log("y", y)
 
 
-def show_result(t: np.ndarray, x: np.ndarray, x_: np.ndarray):
+def show_result(t: np.ndarray, x: np.ndarray, x_: np.ndarray, N: int):
     _, ax = plt.subplots(1, 1)
     c = ["C0", "C1", "C2"]
     h = []
@@ -182,6 +169,8 @@ def show_result(t: np.ndarray, x: np.ndarray, x_: np.ndarray):
     )
     ax.spines.right.set_visible(False)
     ax.spines.top.set_visible(False)
+    filename = f"Session5_N{N}.png"
+    plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
     plt.show()
 
 
@@ -216,7 +205,7 @@ def part_2():
     """Implementation for Exercise 2."""
     print("\nExecuting Exercise 2\n" + "-" * 80)
     
-    for horizon in [15, 25, 50]:
+    for horizon in [15, 25]:
         # problem setup
         cfg = default_config()
         n_steps = 400
@@ -225,7 +214,7 @@ def part_2():
         fs, hs = get_system_equations(symbolic=True, noise=True, Ts=cfg.Ts)
 
         # setup the moving horizon estimator
-        mhe = MHE(fs, hs, horizon=horizon, ekf_initial_state=cfg.x0_est)
+        mhe = MHE(fs, hs, horizon=horizon)
 
         # prepare log
         log = ObserverLog()
@@ -237,7 +226,7 @@ def part_2():
         t = np.arange(0, n_steps+1) * cfg.Ts
 
         # plot output in `x` and `log.x`
-        show_result(t, x, log.x)
+        show_result(t, x, log.x, horizon)
 
 
 if __name__ == "__main__":

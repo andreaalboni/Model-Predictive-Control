@@ -80,26 +80,23 @@ def armijo_linesearch(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdat
     
     alpha = 1.0     # Initial step size
     beta = 0.5      # Step size reduction factor
-    c = 12          # Armijo "strictness" condition constant
 
     dx, du, p = update.dx, update.du, update.p
+    c = np.linalg.norm(p, ord=np.inf) + 5
 
     for _ in range(100):
         xplus = zk.x + alpha * dx
         uplus = zk.u + alpha * du
-        pplus = alpha * p
 
         # Check Armijo condition
         if armijo_condition(merit, xplus.reshape(-1,1), uplus.reshape(-1,1), zk.x.reshape(-1,1), zk.u.reshape(-1,1), dx.reshape(-1,1), du.reshape(-1,1), c, σ, alpha):
-            #print(f"alpha: {alpha}")
-            #print(f"dp: {_}")
+            print(f"c: {c}")
+            print(f"alpha: {alpha}")
             break
         alpha *= beta
-    
-    xplus[0] = zk.x[0]
 
     #End TODO -----------------------------------------------------------
-    return problem.NLIterate(xplus, uplus, pplus)
+    return problem.NLIterate(xplus, uplus, p)
 
 def update_iterate(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdate, *, linesearch: bool, merit_function: problem.FullCostFunction=None) -> problem.NLIterate:
     """Take the current iterate zk and the Newton-Lagrange update and return a new iterate. 
@@ -302,7 +299,7 @@ def exercise34(linesearch:bool):
     else:
         animate.animate_iterates(logger.iterates, os.path.join(WORKING_DIR, "Assignment6-4"))
 
-def exercise56(regularize=False):
+def exercise56(regularize:bool):
     from rcracers.simulator.core import simulate
     f = problem.KinematicBicycle()
     
@@ -340,6 +337,6 @@ if __name__ == "__main__":
     #test_linear_system()
     #exercise2()
     #exercise34(False)
-    #exercise34(True)
-    exercise56(regularize=False)
-    exercise56(regularize=True)
+    exercise34(True)
+    #exercise56(False)
+    #exercise56(True)

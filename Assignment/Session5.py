@@ -94,7 +94,7 @@ class MHE:
         self.solver = self.build(horizon)
 
         # Initialize EKF
-        self.ekf = EKF(f, h, ekf_initial_state, Q=Q, R=R, clipping=ekf_clipping)
+        self.ekf = EKF(f=self.f, h=self.h, x0=ekf_initial_state, clipping=ekf_clipping)
 
     @property
     def nx(self):
@@ -118,9 +118,6 @@ class MHE:
         )
 
     def __call__(self, y: np.ndarray, log: LOGGER):
-        # Update EKF with new measurement
-        self.ekf(y, log)
-
         # store the new measurement
         self.y.append(y)
         if len(self.y) > self.horizon:
@@ -131,18 +128,22 @@ class MHE:
         if len(self.y) < self.horizon:
             solver = self.build(len(self.y))
 
+        # Update EKF with all measurements up to the current time step
+        for measurement in self.y:
+            self.ekf(measurement)
+
         # Use EKF state as initial guess for MHE
         initial_state = self.ekf.x
         P = self.ekf.P
-
-        # update mhe
+        
+        # Update MHE
         x, _ = solver(P, initial_state, self.y)
 
         # update log
         log("x", x[-1, :])
         log("y", y)
 
-def show_result(t: np.ndarray, x: np.ndarray, x_: np.ndarray):
+def show_result(t: np.ndarray, x: np.ndarray, x_: np.ndarray, N: int, clipping: bool = False):
     _, ax = plt.subplots(1, 1)
     c = ["C0", "C1", "C2"]
     h = []
@@ -174,6 +175,8 @@ def show_result(t: np.ndarray, x: np.ndarray, x_: np.ndarray):
     )
     ax.spines.right.set_visible(False)
     ax.spines.top.set_visible(False)
+    filename = f"Assignment5_N={N}_{clipping}.png"
+    plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
     plt.show()
 
 
@@ -205,7 +208,7 @@ def Assignment51(clipping=False):
         t = np.arange(0, n_steps+1) * cfg.Ts
 
         # plot output in `x` and `log.x`
-        show_result(t, x, log.x)
+        show_result(t, x, log.x, horizon, clipping)
 
 
 if __name__ == "__main__":
