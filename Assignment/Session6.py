@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np 
 
 import os 
-WORKING_DIR = os.path.split(__file__)[0]
+WORKING_DIR = os.path.split(__file__)[0]+"/Model Predictive Control - Assignment/images"
 
 def lqr_factor_step(N: int, nl: problem.NewtonLagrangeQP) -> problem.NewtonLagrangeFactors:
     #Begin TODO----------------------------------------------------------
@@ -28,13 +28,13 @@ def lqr_factor_step(N: int, nl: problem.NewtonLagrangeQP) -> problem.NewtonLagra
         rk = nl.rk[k]
         ck = nl.ck[k]
 
-        R_hat = Rk + Bk.T @ P[k + 1] @ Bk
-        S_hat = Sk + Bk.T @ P[k + 1] @ Ak
+        R_bar = Rk + Bk.T @ P[k + 1] @ Bk
+        S_bar = Sk + Bk.T @ P[k + 1] @ Ak
         y = P[k + 1] @ ck + s[k + 1]
-        K[k] = -np.linalg.solve(R_hat, S_hat)
-        e[k] = -np.linalg.solve(R_hat, Bk.T@y + rk)
-        s[k] = qk + Ak.T @ y + S_hat.T @ e[k]
-        P[k] = Qk + Ak.T @ P[k + 1] @ Ak + S_hat.T @ K[k]
+        K[k] = -np.linalg.solve(R_bar, S_bar)
+        e[k] = -np.linalg.solve(R_bar, Bk.T@y + rk)
+        s[k] = qk + Ak.T @ y + S_bar.T @ e[k]
+        P[k] = Qk + Ak.T @ P[k + 1] @ Ak + S_bar.T @ K[k]
 
     #End TODO -----------------------------------------------------------
     return problem.NewtonLagrangeFactors(K, s, P, e)
@@ -51,10 +51,10 @@ def lqr_solve_step(
     
     dx = np.zeros((prob.N + 1, prob.ns))  
     du = np.zeros((prob.N, prob.nu))      
-    p = np.zeros((prob.N, prob.ns))       
+    p = np.zeros((prob.N + 1, prob.ns))       
     dx[0] = 0 
     
-    for k in range(prob.N-1):
+    for k in range(prob.N):
         Kk = fac.K[k]
         sk1 = fac.s[k+1]
         Pk1 = fac.P[k+1]
@@ -65,7 +65,7 @@ def lqr_solve_step(
         ck = np.array(nl.ck[k].flatten())
 
         du[k] = ((Kk @ dx[k]).reshape(-1,1) + ek).flatten()
-        dx[k + 1] = Ak @ dx[k] + Bk @ du[k] + ck
+        dx[k+1] = Ak @ dx[k] + Bk @ du[k] + ck
         p[k+1] = np.array(Pk1 @ dx[k+1] + sk1).flatten()
 
     #End TODO -----------------------------------------------------------
@@ -90,8 +90,8 @@ def armijo_linesearch(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdat
 
         # Check Armijo condition
         if armijo_condition(merit, xplus.reshape(-1,1), uplus.reshape(-1,1), zk.x.reshape(-1,1), zk.u.reshape(-1,1), dx.reshape(-1,1), du.reshape(-1,1), c, σ, alpha):
-            print(f"c: {c}")
-            print(f"alpha: {alpha}")
+            #print(f"c: {c}")
+            #print(f"alpha: {alpha}")
             break
         alpha *= beta
 
@@ -157,6 +157,7 @@ def regularize(qp: problem.NewtonLagrangeQP):
 
     for _ in range(qp.Qk.shape[0]):
         Q_bar = qp.Qk[_]
+        print(f"Q_bar {_} has shape {Q_bar.shape}")
         _lambda = 1e-6
         while not is_posdef(Q_bar):
             Q_bar += _lambda * np.eye(Q_bar.shape[0])
@@ -197,6 +198,10 @@ def newton_lagrange(p: problem.Problem,
 
         if cfg.regularize:
             regularize(qp_it)
+        else:
+            for _ in range(qp_it.Qk.shape[0]):
+                if not is_posdef(qp_it.Qk.QN[_]):
+                    print("Warning: QN is not positive definite!")
 
         factor = lqr_factor_step(p.N, qp_it)
 
@@ -337,6 +342,6 @@ if __name__ == "__main__":
     #test_linear_system()
     #exercise2()
     #exercise34(False)
-    exercise34(True)
-    #exercise56(False)
-    #exercise56(True)
+    #exercise34(True)
+    exercise56(False)
+    exercise56(True)

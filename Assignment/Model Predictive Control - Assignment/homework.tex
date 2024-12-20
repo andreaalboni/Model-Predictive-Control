@@ -2,6 +2,8 @@
 \usepackage{assignment}
 \usepackage{amsmath}
 \usepackage{codex}
+\usepackage{listings}
+\usepackage{xcolor}
 \usepackage{titlesec}
 \titleformat{\section}
   {\Large\scshape}{Session \thesection}{1em}{}
@@ -270,7 +272,7 @@ Therefore, the constraint that guarantees that there will always exist a control
 	Thus, it is expected that only states below this line are classified as feasible initial states, as they satisfy the physical and control limitations of the system.
 \end{flushleft}
 From figure \ref{fig:assignment2_4_1}, \ref{fig:assignment2_4_2} and \ref{fig:assignment2_4_3} can be seen that the number of feasible initial states decreases as the prediction horizon $N$ increases. 
-This phenomenon arises because, with a longer prediction horizon, the Model Predictive Control (MPC) algorithm accounts for future constraints over a longer period. 
+This phenomenon arises because, with a longer prediction horizon, the Model Predictive Control algorithm accounts for future constraints over a longer period. 
 Specifically, the system becomes increasingly aware that with the minimum allowable braking input of $u_{min}=-5$, the car will not be able to stop in time if the initial velocity exceed a certain threshold, cyan line, with respect to the initial position.
 \begin{figure}[H]
     \centering
@@ -923,6 +925,18 @@ x, w = solver(P=np.eye(3), x0=np.zeros(3), y=np.zeros((10, 1)))
 \end{assignment}
 \begin{enumerate}
 	\item The prior can be passed to the \texttt{build\_mhe} method as follows:
+	\begin{lstlisting}[style=python]
+	def build(self, horizon: int):
+        return build_mhe(
+            self.loss,
+            self.f,
+            self.h,
+            horizon,
+            lbx=self.lbx,
+            ubx=self.ubx,
+            use_prior=True
+        )
+	\end{lstlisting}
 	
 	\item Alter
 	
@@ -995,6 +1009,10 @@ for multiple shooting (i.e., simultaneous approach).
 	This function calls your SQP solver on a problem involving 
 	a linear system. Is the output what you expect? Why?
 \end{assignment}
+\begin{flushleft}
+	Expected convergence in 2 iterations, as the system is linear.
+	Not sure about the values of $J_N$ and $||h||_2$ though.
+\end{flushleft}
 \begin{lstlisting}[style=python]
 	it.    0 | JN = 1.51e+04 | ||h||2 = 5.12e+00
 	it.    1 | JN = 1.51e+04 | ||h||2 = 5.12e+00
