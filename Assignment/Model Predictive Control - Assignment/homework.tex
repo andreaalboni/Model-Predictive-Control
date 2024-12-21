@@ -1014,8 +1014,8 @@ for multiple shooting (i.e., simultaneous approach).
 	Not sure about the values of $J_N$ and $||h||_2$ though.
 \end{flushleft}
 \begin{lstlisting}[style=python]
-	it.    0 | JN = 1.51e+04 | ||h||2 = 5.12e+00
-	it.    1 | JN = 1.51e+04 | ||h||2 = 5.12e+00
+	it.    0 | JN = 1.51e+04 | ||h||2 = 1.25e-13
+	it.    1 | JN = 1.51e+04 | ||h||2 = 1.07e-13
 \end{lstlisting}
 
 
@@ -1089,7 +1089,12 @@ The problem that you can pass to your SQP solver is described by \texttt{ToyProb
    Do you notice any difference with respect to the solution in \cref{assgn:62}? 
    How do you explain this?
 \end{assignment}
-
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{images/Assignment6-4.pdf}
+	\caption{Final solution of the nonlinear test case using linesearch.}
+	\label{fig:assignment6_4}
+\end{figure}
 
 
 

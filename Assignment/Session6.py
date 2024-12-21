@@ -10,10 +10,10 @@ WORKING_DIR = os.path.split(__file__)[0]+"/Model Predictive Control - Assignment
 def lqr_factor_step(N: int, nl: problem.NewtonLagrangeQP) -> problem.NewtonLagrangeFactors:
     #Begin TODO----------------------------------------------------------
 
-    P = [None] * (N + 1)  
-    s = [None] * (N + 1)  
-    K = [None] * N        
-    e = [None] * N       
+    P = [None] * (N + 1)
+    s = [None] * (N + 1)
+    K = [None] * N
+    e = [None] * N
     
     P[-1] = nl.QN        
     s[-1] = nl.qN        
@@ -32,7 +32,7 @@ def lqr_factor_step(N: int, nl: problem.NewtonLagrangeQP) -> problem.NewtonLagra
         S_bar = Sk + Bk.T @ P[k + 1] @ Ak
         y = P[k + 1] @ ck + s[k + 1]
         K[k] = -np.linalg.solve(R_bar, S_bar)
-        e[k] = -np.linalg.solve(R_bar, Bk.T@y + rk)
+        e[k] = -np.linalg.solve(R_bar, Bk.T @ y + rk)
         s[k] = qk + Ak.T @ y + S_bar.T @ e[k]
         P[k] = Qk + Ak.T @ P[k + 1] @ Ak + S_bar.T @ K[k]
 
@@ -81,22 +81,21 @@ def armijo_linesearch(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdat
     alpha = 1.0     # Initial step size
     beta = 0.5      # Step size reduction factor
 
-    dx, du, p = update.dx, update.du, update.p
-    c = np.linalg.norm(p, ord=np.inf) + 5
+    dx, du = update.dx, update.du
+    c = np.linalg.norm(update.p, ord=np.inf) + 3
 
     for _ in range(100):
         xplus = zk.x + alpha * dx
         uplus = zk.u + alpha * du
 
         # Check Armijo condition
-        if armijo_condition(merit, xplus.reshape(-1,1), uplus.reshape(-1,1), zk.x.reshape(-1,1), zk.u.reshape(-1,1), dx.reshape(-1,1), du.reshape(-1,1), c, σ, alpha):
-            #print(f"c: {c}")
-            #print(f"alpha: {alpha}")
+        if armijo_condition(merit, xplus.reshape(-1,1), uplus.reshape(-1,1), zk.x.reshape(-1,1), 
+                            zk.u.reshape(-1,1), dx.reshape(-1,1), du.reshape(-1,1), c, σ, alpha):
             break
         alpha *= beta
 
     #End TODO -----------------------------------------------------------
-    return problem.NLIterate(xplus, uplus, p)
+    return problem.NLIterate(xplus, uplus, update.p)
 
 def update_iterate(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdate, *, linesearch: bool, merit_function: problem.FullCostFunction=None) -> problem.NLIterate:
     """Take the current iterate zk and the Newton-Lagrange update and return a new iterate. 
@@ -122,18 +121,17 @@ def update_iterate(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdate, 
         return armijo_linesearch(zk, update, merit_function)
     #Begin TODO----------------------------------------------------------
     
-    dx, du, p = update.dx, update.du, update.p
+    dx, du = update.dx, update.du
     alpha = 1.0
     
     xnext = zk.x + alpha * dx
     unext = zk.u + alpha * du
-    pnext = alpha * p
 
     xnext[0] = zk.x[0]
     return problem.NLIterate(
         x = xnext,
         u = unext, 
-        p = pnext 
+        p = update.p
     )
 
     #End TODO -----------------------------------------------------------
@@ -157,7 +155,6 @@ def regularize(qp: problem.NewtonLagrangeQP):
 
     for _ in range(qp.Qk.shape[0]):
         Q_bar = qp.Qk[_]
-        print(f"Q_bar {_} has shape {Q_bar.shape}")
         _lambda = 1e-6
         while not is_posdef(Q_bar):
             Q_bar += _lambda * np.eye(Q_bar.shape[0])
@@ -198,10 +195,11 @@ def newton_lagrange(p: problem.Problem,
 
         if cfg.regularize:
             regularize(qp_it)
-        else:
-            for _ in range(qp_it.Qk.shape[0]):
-                if not is_posdef(qp_it.Qk.QN[_]):
-                    print("Warning: QN is not positive definite!")
+    
+        for _ in range(qp_it.Qk.shape[0]):
+            if not is_posdef(qp_it.Qk[_]):
+                print("\033[93mWarning: QN is not positive definite!\033[0m")
+                break
 
         factor = lqr_factor_step(p.N, qp_it)
 
@@ -274,7 +272,6 @@ def exercise2():
     animate.animate_iterates(logger.iterates, os.path.join(WORKING_DIR, "Assignment6-2"))
 
 def exercise34(linesearch:bool):
-    print("Assignment 6.3 and 6.4.")
     from rcracers.simulator.core import simulate
     f = problem.ToyDynamics(False)
 
@@ -283,7 +280,8 @@ def exercise34(linesearch:bool):
 
     # Select initial guess by running an open-loop simulation
     #Begin TODO----------------------------------------------------------
-    
+    print("Assignment 6.3." if not linesearch else "Assignment 6.4.")
+
     def open_loop_policy():
         return np.zeros(p.nu)
     
@@ -313,18 +311,18 @@ def exercise56(regularize:bool):
 
     # Select initial guess by running an open-loop simulation
     #Begin TODO----------------------------------------------------------
+    print("Assignment 6.5." if not regularize else "Assignment 6.6.")
+
+    x0 = np.zeros((p.N+1, p.ns))
+    u0 = np.zeros((p.N, p.nu))
+    x0[0] = p.x0
+    initial_guess = problem.NLIterate(x0, u0, np.zeros_like(x0))
     
-    #x0 = np.zeros((p.N+1, p.ns))
-    #u0 = np.zeros((p.N, p.nu))
-    #x0[0] = p.x0
-    #initial_guess = problem.NLIterate(x0, u0, np.zeros_like(x0))
-    
-    def open_loop_policy():
-        return np.zeros(p.nu)
-    
-    x_trajectory = simulate(x0=p.x0, dynamics=fw_euler(f, p.Ts), n_steps=p.N, policy=open_loop_policy)
-    u_trajectory = np.zeros((p.N, p.nu)) 
-    initial_guess = problem.NLIterate(x=x_trajectory, u=u_trajectory, p=np.zeros_like(x_trajectory))
+    #def open_loop_policy():
+    #    return np.zeros(p.nu)
+    #x_trajectory = simulate(x0=p.x0, dynamics=fw_euler(f, p.Ts), n_steps=p.N, policy=open_loop_policy)
+    #u_trajectory = np.zeros((p.N, p.nu)) 
+    #initial_guess = problem.NLIterate(x=x_trajectory, u=u_trajectory, p=np.zeros_like(x_trajectory))
 
     #End TODO -----------------------------------------------------------
 
