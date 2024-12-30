@@ -31,6 +31,7 @@ def lqr_factor_step(N: int, nl: problem.NewtonLagrangeQP) -> problem.NewtonLagra
         R_bar = Rk + Bk.T @ P[k + 1] @ Bk
         S_bar = Sk + Bk.T @ P[k + 1] @ Ak
         y = P[k + 1] @ ck + s[k + 1]
+        
         K[k] = -np.linalg.solve(R_bar, S_bar)
         e[k] = -np.linalg.solve(R_bar, Bk.T @ y + rk)
         s[k] = qk + Ak.T @ y + S_bar.T @ e[k]
@@ -49,9 +50,9 @@ def lqr_solve_step(
 ) -> problem.NewtonLagrangeUpdate: 
     #Begin TODO----------------------------------------------------------
     
-    dx = np.zeros((prob.N + 1, prob.ns))  
+    dx = np.zeros((prob.N+1, prob.ns))  
     du = np.zeros((prob.N, prob.nu))      
-    p = np.zeros((prob.N + 1, prob.ns))       
+    p = np.zeros_like(dx)
     dx[0] = 0 
     
     for k in range(prob.N):
@@ -82,7 +83,7 @@ def armijo_linesearch(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdat
     beta = 0.5      # Step size reduction factor
 
     dx, du = update.dx, update.du
-    c = np.linalg.norm(update.p, ord=np.inf) + 3
+    c = 1.25 * np.linalg.norm(update.p, ord=np.inf)
 
     for _ in range(100):
         xplus = zk.x + alpha * dx
@@ -95,7 +96,7 @@ def armijo_linesearch(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdat
         alpha *= beta
 
     #End TODO -----------------------------------------------------------
-    return problem.NLIterate(xplus, uplus, update.p)
+    return problem.NLIterate(x=xplus, u=uplus, p=update.p)
 
 def update_iterate(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdate, *, linesearch: bool, merit_function: problem.FullCostFunction=None) -> problem.NLIterate:
     """Take the current iterate zk and the Newton-Lagrange update and return a new iterate. 
@@ -127,12 +128,7 @@ def update_iterate(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdate, 
     xnext = zk.x + alpha * dx
     unext = zk.u + alpha * du
 
-    xnext[0] = zk.x[0]
-    return problem.NLIterate(
-        x = xnext,
-        u = unext, 
-        p = update.p
-    )
+    return problem.NLIterate(x=xnext, u=unext, p=update.p)
 
     #End TODO -----------------------------------------------------------
 
@@ -198,7 +194,7 @@ def newton_lagrange(p: problem.Problem,
     
         for _ in range(qp_it.Qk.shape[0]):
             if not is_posdef(qp_it.Qk[_]):
-                print("\033[93mWarning: QN is not positive definite!\033[0m")
+                print(f"\033[93mWarning: Qk[{_}] is not positive definite!\033[0m")
                 break
 
         factor = lqr_factor_step(p.N, qp_it)
@@ -225,6 +221,7 @@ def newton_lagrange(p: problem.Problem,
             return stats
         
     stats.exit_message = "Maximum number of iterations exceeded\n"
+    print(np.linalg.norm(update.du.squeeze(), ord=np.inf)/np.linalg.norm(zk.u))
     return stats
 
 def exercise1():
@@ -307,32 +304,42 @@ def exercise56(regularize:bool):
     f = problem.KinematicBicycle()
     
     # Build the problem 
-    p = problem.ParkingProblem()
+    park_prob = problem.ParkingProblem()
 
     # Select initial guess by running an open-loop simulation
     #Begin TODO----------------------------------------------------------
     print("Assignment 6.5." if not regularize else "Assignment 6.6.")
 
-    x0 = np.zeros((p.N+1, p.ns))
-    u0 = np.zeros((p.N, p.nu))
-    x0[0] = p.x0
+    x0 = np.zeros((park_prob.N+1, park_prob.ns))
+    u0 = np.zeros((park_prob.N, park_prob.nu))
+    x0[0] = park_prob.x0
     initial_guess = problem.NLIterate(x0, u0, np.zeros_like(x0))
-    
+    fig, ax = plt.subplots(figsize=(10, 8))
+    for i in range(initial_guess.x.shape[1]):
+        ax.scatter(range(initial_guess.x.shape[0]), initial_guess.x[:, i], label=f'x{i}')  # Use scatter to plot points
+    ax.set_title('State Variables (x)')
+    ax.set_xlabel('Time Step')
+    ax.set_ylabel('State Value')
+    ax.legend()
+    ax.grid(True)
+    plt.tight_layout()
+    plt.show()
+
     #def open_loop_policy():
-    #    return np.zeros(p.nu)
-    #x_trajectory = simulate(x0=p.x0, dynamics=fw_euler(f, p.Ts), n_steps=p.N, policy=open_loop_policy)
-    #u_trajectory = np.zeros((p.N, p.nu)) 
+    #    return np.zeros(park_prob.nu)
+    #x_trajectory = simulate(x0=park_prob.x0, dynamics=fw_euler(f, park_prob.Ts), n_steps=park_prob.N, policy=open_loop_policy)
+    #u_trajectory = np.zeros((park_prob.N, park_prob.nu)) 
     #initial_guess = problem.NLIterate(x=x_trajectory, u=u_trajectory, p=np.zeros_like(x_trajectory))
 
     #End TODO -----------------------------------------------------------
 
-    logger = problem.Logger(p, initial_guess)
+    logger = problem.Logger(park_prob, initial_guess)
     cfg = problem.NewtonLagrangeCfg(linesearch=True, max_iter=50, regularize=regularize)
-    final_iterate = newton_lagrange(p, initial_guess, log_callback=logger, cfg=cfg)
+    final_iterate = newton_lagrange(park_prob, initial_guess, log_callback=logger, cfg=cfg)
     print(final_iterate.exit_message)
 
     from given.homework import animate
-    animate.animate_iterates(logger.iterates, os.path.join(WORKING_DIR, f"Assignment6-5-reg{regularize}"))
+    #animate.animate_iterates(logger.iterates, os.path.join(WORKING_DIR, f"Assignment6-5-reg{regularize}"))
     animate.animate_positions(logger.iterates, os.path.join(WORKING_DIR, f"parking_regularize-{regularize}"))
 
 

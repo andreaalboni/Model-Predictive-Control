@@ -333,6 +333,19 @@ class Logger:
 
         # Print progress to terminal 
         print(f"it. {stats.n_its:4d} | JN = {cost:4.2e} | ||h||2 = {dynamics_violation:4.2e}")
+        x = z.x
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots(figsize=(10, 8))
+        for i in range(x.shape[1]):
+            ax.scatter(range(x.shape[0]), x[:, i], label=f'x{i}')  # Use scatter to plot points
+        ax.set_title('State Variables (x)')
+        ax.set_xlabel('Time Step')
+        ax.set_ylabel('State Value')
+        ax.legend()
+        ax.grid(True)
+        plt.tight_layout()
+        plt.show()
+        
         # Store current iterate in the log 
         self.iterates.append(z)
 
