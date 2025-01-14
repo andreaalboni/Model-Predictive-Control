@@ -226,6 +226,7 @@ class NewtonLagrangeStats:
     solution: NLIterate = None 
     exit_message: str = None
     success: bool = False
+    alpha: float = None
 
 #-----------------------------------------------------------
 # Utility functions
@@ -318,9 +319,10 @@ def build_cost_and_constraint(prob: Problem) -> FullCostFunction:
 class Logger:
     """Basic logger that can be used for debugging and monitoring of the internals of the Newton-Lagrange method."""
 
-    def __init__(self, problem: Problem, x0: NLIterate):
+    def __init__(self, problem: Problem, x0: NLIterate, alpha: float = None):
         self.iterates = [x0]
         self.full_cost = build_cost_and_constraint(problem)
+        self.alpha = alpha
 
     def __call__(self, stats: NewtonLagrangeStats):
 
@@ -332,21 +334,10 @@ class Logger:
         dynamics_violation = float(self.full_cost.h(to_vec(z.x), to_vec(z.u)))
 
         # Print progress to terminal 
-        print(f"it. {stats.n_its:4d} | JN = {cost:4.2e} | ||h||2 = {dynamics_violation:4.2e}")
-        x = z.x
-        import matplotlib.pyplot as plt
-        fig, ax = plt.subplots(figsize=(10, 8))
-        for i in range(x.shape[1]):
-            ax.scatter(range(x.shape[0]), x[:, i], label=f'x{i}')  # Use scatter to plot points
-        ax.set_title('State Variables (x)')
-        ax.set_xlabel('Time Step')
-        ax.set_ylabel('State Value')
-        ax.legend()
-        ax.grid(True)
-        plt.tight_layout()
-        plt.show()
+        if stats.alpha is not None:
+            print(f"it. {stats.n_its:4d} | JN = {cost:4.2e} | ||h||2 = {dynamics_violation:4.2e} | alpha = {stats.alpha:4.2e}")
+        else:
+            print(f"it. {stats.n_its:4d} | JN = {cost:4.2e} | ||h||2 = {dynamics_violation:4.2e}")
         
         # Store current iterate in the log 
         self.iterates.append(z)
-
-

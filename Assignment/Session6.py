@@ -83,7 +83,7 @@ def armijo_linesearch(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdat
     beta = 0.5      # Step size reduction factor
 
     dx, du = update.dx, update.du
-    c = 1.25 * np.linalg.norm(update.p, ord=np.inf)
+    c = 1.32 * np.linalg.norm(update.p, ord=np.inf)
 
     for _ in range(100):
         xplus = zk.x + alpha * dx
@@ -96,7 +96,7 @@ def armijo_linesearch(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdat
         alpha *= beta
 
     #End TODO -----------------------------------------------------------
-    return problem.NLIterate(x=xplus, u=uplus, p=update.p)
+    return problem.NLIterate(x=xplus, u=uplus, p=update.p), alpha
 
 def update_iterate(zk: problem.NLIterate, update: problem.NewtonLagrangeUpdate, *, linesearch: bool, merit_function: problem.FullCostFunction=None) -> problem.NLIterate:
     """Take the current iterate zk and the Newton-Lagrange update and return a new iterate. 
@@ -172,7 +172,8 @@ def newton_lagrange(p: problem.Problem,
     Returns:
         Solver stats  
     """
-    stats = problem.NewtonLagrangeStats(0, initial_guess)
+    stats = problem.NewtonLagrangeStats(0, initial_guess, alpha = None)
+    
     # Set the default config if None was passed 
     if cfg is None:
         cfg = problem.NewtonLagrangeCfg()
@@ -201,10 +202,14 @@ def newton_lagrange(p: problem.Problem,
 
         update = lqr_solve_step(p, qp_it, factor)
 
-        zk = update_iterate(zk, update, linesearch=cfg.linesearch, merit_function=full_cost)
+        if cfg.linesearch:
+            zk, alpha = update_iterate(zk, update, linesearch=cfg.linesearch, merit_function=full_cost)
+        else:
+            zk = update_iterate(zk, update, linesearch=cfg.linesearch)
 
         stats.n_its = it 
         stats.solution = zk 
+        if cfg.linesearch: stats.alpha = alpha
         # Call the logger. 
         log_callback(stats)
 
@@ -221,7 +226,6 @@ def newton_lagrange(p: problem.Problem,
             return stats
         
     stats.exit_message = "Maximum number of iterations exceeded\n"
-    print(np.linalg.norm(update.du.squeeze(), ord=np.inf)/np.linalg.norm(zk.u))
     return stats
 
 def exercise1():
@@ -314,16 +318,6 @@ def exercise56(regularize:bool):
     u0 = np.zeros((park_prob.N, park_prob.nu))
     x0[0] = park_prob.x0
     initial_guess = problem.NLIterate(x0, u0, np.zeros_like(x0))
-    fig, ax = plt.subplots(figsize=(10, 8))
-    for i in range(initial_guess.x.shape[1]):
-        ax.scatter(range(initial_guess.x.shape[0]), initial_guess.x[:, i], label=f'x{i}')  # Use scatter to plot points
-    ax.set_title('State Variables (x)')
-    ax.set_xlabel('Time Step')
-    ax.set_ylabel('State Value')
-    ax.legend()
-    ax.grid(True)
-    plt.tight_layout()
-    plt.show()
 
     #def open_loop_policy():
     #    return np.zeros(park_prob.nu)
@@ -334,19 +328,19 @@ def exercise56(regularize:bool):
     #End TODO -----------------------------------------------------------
 
     logger = problem.Logger(park_prob, initial_guess)
-    cfg = problem.NewtonLagrangeCfg(linesearch=True, max_iter=50, regularize=regularize)
+    cfg = problem.NewtonLagrangeCfg(linesearch=True, max_iter=70, regularize=regularize)
     final_iterate = newton_lagrange(park_prob, initial_guess, log_callback=logger, cfg=cfg)
     print(final_iterate.exit_message)
 
     from given.homework import animate
-    #animate.animate_iterates(logger.iterates, os.path.join(WORKING_DIR, f"Assignment6-5-reg{regularize}"))
+    animate.animate_iterates(logger.iterates, os.path.join(WORKING_DIR, f"Assignment6-5-reg{regularize}"))
     animate.animate_positions(logger.iterates, os.path.join(WORKING_DIR, f"parking_regularize-{regularize}"))
 
 
 if __name__ == "__main__":
-    #test_linear_system()
+    test_linear_system()
     #exercise2()
     #exercise34(False)
     #exercise34(True)
-    exercise56(False)
-    exercise56(True)
+    #exercise56(False)
+    #exercise56(True)
