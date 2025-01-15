@@ -339,10 +339,10 @@ def exercise56(regularize:bool, max_iter=50):
 
 
 if __name__ == "__main__":
-    #test_linear_system()
-    #exercise2()
+    test_linear_system()
+    exercise2()
     exercise34(False)
-    #exercise34(True)
-    #exercise56(False)
-    #exercise56(True)
-    #exercise56(True, max_iter=70)
+    exercise34(True)
+    exercise56(False)
+    exercise56(True)
+    exercise56(True, max_iter=70)

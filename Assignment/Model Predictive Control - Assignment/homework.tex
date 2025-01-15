@@ -61,7 +61,7 @@ Before submitting your final report, make sure that you verify your solutions fr
 		Kinf:  [[1.28645 2.31256]]
 	\end{lstlisting}
 
-	\item 	The analysis demonstrates, and the plots \ref{fig:2x2grid} confirm, that increasing the prediction horizon $N$ improves the performance of the finite-horizon MPC. For small $N$, the controller struggles to approximate the long-term cost-to-go, leading to poor decision-making and significant deviation from the infinite-horizon LQR solution. 
+	\item 	The analysis demonstrates, and the plots in figure \ref{fig:2x2grid} confirm, that increasing the prediction horizon $N$ improves the performance of the finite-horizon MPC. For small $N$, the controller struggles to approximate the long-term cost-to-go, leading to poor decision-making and significant deviation from the infinite-horizon LQR solution. 
 	However, as $N$ increases, the finite-horizon MPC gradually captures more of the system's future behavior, reducing the mismatch between its terminal cost approximation and the true cost-to-go function. 
 	Ultimately, for sufficiently large $N$, the finite-horizon MPC converges to the infinite-horizon LQR solution, achieving optimal control performance. 
 	
@@ -100,20 +100,20 @@ Before submitting your final report, make sure that you verify your solutions fr
 		\label{fig:2x2grid}
 	\end{figure}
 \end{itemize}
-For $N=4$, shown in Figure \ref{fig:imgN4}, the MPC trajectories show a significant deviation from 
+For $N=4$, shown in figure \ref{fig:imgN4}, the MPC trajectories show a significant deviation from 
 the infinite-horizon LQR solution. The real trajectory and predictions fail to converge toward the desired optimal behavior. 
 This happens because a short prediction horizon limits the controller's ability to account for the system's long-term evolution.  
 
-As the prediction horizon increases to $N=6$, Figure \ref{fig:imgN6}, it improves noticeably. 
+As the prediction horizon increases to $N=6$, figure \ref{fig:imgN6}, it improves noticeably. 
 The predicted trajectories (red curves) begin to better align with the infinite-horizon LQR solution (blue curve), and the real trajectory starts to resemble the desired behavior. 
 Although some visible deviation remains, the increased horizon length allows the controller to approximate the terminal cost more accurately, providing better foresight into the system's future behavior. 
 This improvement reflects the recursive nature of the cost-to-go function: with a longer prediction horizon, the controller reduces the mismatch between the finite-horizon cost approximation and the true long-term cost-to-go.
 
-For N=10, Figure \ref{fig:imgN10}, the finite-horizon MPC achieves near-optimal behavior, as evidenced by the close overlap between the real and predicted trajectories with the infinite-horizon LQR trajectory. 
+For N=10, figure \ref{fig:imgN10}, the finite-horizon MPC achieves near-optimal behavior, as evidenced by the close overlap between the real and predicted trajectories with the infinite-horizon LQR trajectory. 
 At this horizon length, the MPC solution has almost converged to the optimal control law. 
 The terminal cost and the resulting feedback gain closely approximate those obtained from solving the Discrete Algebraic Riccati Equation (DARE), which characterizes the infinite-horizon optimal solution. 
 
-As N increases, Figure \ref{fig:imgN20} shows a simulation where $N=20$, the terminal cost used in the finite-horizon MPC converges to the true cost-to-go, enabling the MPC to replicate the infinite-horizon behavior.
+As N increases, figure \ref{fig:imgN20} shows a simulation where $N=20$, the terminal cost used in the finite-horizon MPC converges to the true cost-to-go, enabling the MPC to replicate the infinite-horizon behavior.
 
 \begin{assignment}
 	Numerically compare the quality of the finite-horizon LQR controller to the infinite horizon controller. 
@@ -267,13 +267,13 @@ Therefore, the constraint that guarantees that there will always exist a control
 	\textbf{Remark.} You only have to check the initial feasibility of the MPC problem, not recursive feasibility.
 \end{assignment}
 \begin{flushleft}
-	The cyan curve, in figure \ref{fig:assignment2_4_1}, \ref{fig:assignment2_4_2} and \ref{fig:assignment2_4_3}, represents the derived constraint, denoting the boundary for feasible initial points given the initial velocities. 
+	The blue curve, in figure \ref{fig:assignment2_4_1}, \ref{fig:assignment2_4_2} and \ref{fig:assignment2_4_3}, represents the derived constraint, denoting the boundary for feasible initial points given the initial velocities. 
 	States below this boundary ensure that the vehicle can decelerate and come to a complete stop within the allowed constraints, having a maximum final position $p_{max}=1$. 
 	Thus, it is expected that only states below this line are classified as feasible initial states, as they satisfy the physical and control limitations of the system.
 \end{flushleft}
 From figure \ref{fig:assignment2_4_1}, \ref{fig:assignment2_4_2} and \ref{fig:assignment2_4_3} can be seen that the number of feasible initial states decreases as the prediction horizon $N$ increases. 
 This phenomenon arises because, with a longer prediction horizon, the Model Predictive Control algorithm accounts for future constraints over a longer period. 
-Specifically, the system becomes increasingly aware that with the minimum allowable braking input of $u_{min}=-5$, the car will not be able to stop in time if the initial velocity exceed a certain threshold, cyan line, with respect to the initial position.
+Specifically, the system becomes increasingly aware that with the minimum allowable braking input of $u_{min}=-5$, the car will not be able to stop in time if the initial velocity exceed a certain threshold, blue line, with respect to the initial position.
 \begin{figure}[H]
     \centering
     \begin{minipage}{0.7\textwidth}
@@ -365,11 +365,8 @@ the session.
 		\max \left\{ h_i^T x \mid x^T P x \le \alpha \right\}
 	\]
 	Therefore, the lagrange function is:
-	\[ 
-	\begin{aligned}
-		\mathcal{L}(x, \mu) &= - h_i^T x + \mu g(x)
-							&= - h_i^T x + \mu (x^T P x - \alpha)
-	\end{aligned}
+	\[
+		\mathcal{L}(x, \mu) = - h_i^T x + \mu g(x) = - h_i^T x + \mu (x^T P x - \alpha)
 	\]
 	Setting the gradient to zero, we obtain:
 	\[ 
@@ -414,7 +411,7 @@ the session.
 	$x_{t+1} = A x_t + B u_t$ under the policy $u_t = K x_t$.
 \end{assignment}
 \begin{flushleft}
-	The ellipsoidal set $E$, depicted in Figure \ref{fig:assignment3_2} in yellow, is centered in $[0,0]$ and its size is defined by a shape matrix $P$, obtained from the Riccati recursion.
+	The ellipsoidal set $E$, depicted in figure \ref{fig:assignment3_2} in yellow, is centered in $[0,0]$ and its size is defined by a shape matrix $P$, obtained from the Riccati recursion.
 	Furthermore, by appropriately scaling the ellipsoid using the parameter $\alpha$, the largest possible ellipsoidal set that remains entirely within the polyhedral constraints is obtained. 
 	The result is a maximized terminal set that touches precisely one boundary of the feasible polyhedral set, depicted in black, ensuring optimal usage of the allowable state space.
 	
@@ -629,7 +626,7 @@ Applying the Schur complement lemma, we obtain the desired LMI:
 			& & \text{constraints in \cref{sess3:c1,sess3:c2,sess3:c3}}
 		\end{aligned}
 	\end{equation} 
-	The constraints, elaborated in the previous sections of this assignment, have been formulated as LMI. The resulting ellipsoid is shown in the Figure \ref{fig:assignment3_7}. 
+	The constraints, elaborated in the previous sections of this assignment, have been formulated as LMI. The resulting ellipsoid is shown in the figure \ref{fig:assignment3_7}. 
 	Notably, this ellipsoid touches two boundaries of the polyhedral set, demonstrating that it has been scaled to its maximum possible size while remaining entirely within the feasible region. 
 	This ensures the ellipsoid fully satisfies the constraints, serving as the largest admissible invariant set for the MPC problem.
 \end{flushleft}
@@ -740,7 +737,7 @@ Moroever, the radius of the circles, applying the Pitagora theorem, can be expre
 \[
 	r = \sqrt{d^2 + \frac{w^2}{4}}
 \]
-Below, Figure \ref{fig:assignment4_1}, a picture of the vehicle covered by 3 circles is shown.
+Below, figure \ref{fig:assignment4_1}, a picture of the vehicle covered by 3 circles is shown.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{images/Assignment_41.png}
@@ -778,7 +775,7 @@ And we sum to the circles' local coordinates obtained previously the global coor
 		p_x \\ p_y
 	\end{bmatrix}
 \]
-Below, Figure \ref{fig:assignment4_2}, a picture of the vehicle having a yaw, $ \psi = \pi/4 $, positioned in $	p = [2, 2]^\top $ covered by 3 circles is shown.
+Below, figure \ref{fig:assignment4_2}, a picture of the vehicle having a yaw, $ \psi = \pi/4 $, positioned in $	p = [2, 2]^\top $ covered by 3 circles is shown.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{images/Assignment_42.png}
@@ -866,7 +863,7 @@ The euclidean norm squared is a convex function, the negative of a convex functi
 	(see the solution of the exercise session for some example code. You can use the argument \texttt{obstacle\_positions} to visualize the obstacle.)
 \end{assignment}
 \begin{flushleft}
-	As can be seen in Figure \ref{fig:assignment4_4}, using the default values for $Q$, $R$, and $N$, the trajectory is collision-free but the vehicle is not fully parked within the parking spot.
+	As can be seen in figure \ref{fig:assignment4_4}, using the default values for $Q$, $R$, and $N$, the trajectory is collision-free but the vehicle is not fully parked within the parking spot.
 \end{flushleft}
 \begin{figure}[H]
     \centering
@@ -885,20 +882,21 @@ The euclidean norm squared is a convex function, the negative of a convex functi
 	and illustrate the final result with a plot of the trajectory.
 \end{assignment}
 \begin{flushleft}
-	These parameters and how they affect the behavior of the car have been thought through, and then some experiments have been performed to see how they work in practice. Here's the results:
+	The tuning parameters were carefully considered in terms of their impact on the car's behavior, followed by a series of experiments conducted to evaluate their practical performance. Here are the results:
 \end{flushleft}
 \begin{itemize}
-    \item $n_c$: This parameter affects how closely the car passes by the parked car. Increasing the number of circles improves the approximation of the car by the circles, allowing the car to pass closer to the parked car.
+    \item $n_c$: affects how closely the car passes by the parked car. Increasing the number of circles improves the approximation of the car by the circles, allowing the car to pass closer to the parked car.
     
-    \item $N$: A larger prediction horizon $N$ allows the car to get closer to the desired position (the center of the parking spot $(0,0)$). However, this also increases the computational cost and time.
+    \item $N$: a larger prediction horizon $N$ allows the car to get closer to the desired position (the center of the parking spot $(0,0)$). However, this also increases the computational cost and time.
 
-    \item $Q$: Modifying the first two elements on the diagonal of $Q$ helps by increasing the cost associated with the position in $x$ and $y$. Consequently, the car will tend to improve along those directions. Additionally, changing the third element (related to the $yaw$) can also be beneficial.
+    \item $Q$: modifying the first two elements on the diagonal of $Q$ helps by increasing the cost associated with the position in $x$ and $y$. Consequently, the car will tend to improve along those directions. Additionally, changing the third element (related to the $yaw$) can also be beneficial.
     
-	\item $Q_N$: Modifying its elements leads to a greater penalization of the final position of the car additionally pushing the car to reach the origin.
+	\item $Q_N$: modifying its elements leads to a greater penalization of the final position of the car additionally pushing the car to reach the origin.
 \end{itemize}
-Given the observations, the following parameters were changed from the provided defaults and the final tuning is shown in the code below. Using these values, the final position reached by the car is $[x, y, \text{yaw}, \text{vel}] = [-2.68\exp-06, -3.65\exp-04, -1.28\exp-03, -6.91\exp-07]$.
-The final parking trajectory is illustrated in Figure \ref{fig:assignment4_5}.
-\begin{lstlisting}
+Given the observations, the following parameters were changed from the provided defaults and the final tuning is shown in the code below. Using these values, the final position reached by the car is:
+\[ [x, y, \text{yaw}, \text{vel}] = [-2.68\exp-06, -3.65\exp-04, -1.28\exp-03, -6.91\exp-07] \]
+The final parking trajectory is illustrated in figure \ref{fig:assignment4_5}.
+\begin{lstlisting}[style=python]
 Q = cs.diagcat(5, 30, 0.05, 0.01)
 R = cs.diagcat(0.5, 0.007)
 Q_add = cs.diagcat(0, 15, 10, 0)
@@ -952,8 +950,8 @@ def __call__(self, y, log) -> np.ndarray:
 \end{assignment}
 \begin{flushleft}
 	I assumed real-time execution to be any solver time below 75\% of the sampling time $t_s$ (i.e. $0.75 t_s$), this has been implemented in code as can be seen below. 
-	To achieve this, I adjusted, from the previously custom parameters, the prediction horizon length $N$ to 8, which reduced the solver time to 0.5 seconds, comfortably meeting the real-time requirement ( $0.5 < 0.6 = 0.75 t_s$ ).
-	Below, in Figure \ref{fig:assignment4_6} the car's trajectory with this tuning applied can be seen.
+	To achieve this, I adjusted, from the previously custom parameters, the horizon length $N$ to 8, which reduced the solver time to 0.5 seconds, comfortably meeting the real-time requirement ( $0.5 < 0.6 = 0.75 t_s$ ).
+	Below, in figure \ref{fig:assignment4_6} the car's trajectory with this tuning applied can be seen.
 \end{flushleft}
 \begin{lstlisting}[style=python]
 if np.max(log.solver_time) > 0.75 * ts:
@@ -1027,7 +1025,7 @@ x, w = solver(P=np.eye(3), x0=np.zeros(3), y=np.zeros((10, 1)))
 	\end{lstlisting}
 	
 	\item The \texttt{MHE} has been modified in the following way to implement internally an \texttt{EKF} that to produce $\hat{x}_{T-N}$, and $P^-_{T-N}$, uses only the measurements available before time $T-N$. 
-	The number of past estimates to store should be equal to the horizon length, $N$.
+	The number of past estimates to store was found to be equal to the horizon length, $N$.
 	\begin{lstlisting}[style=python]
 		def __call__(self, y: np.ndarray, log: LOGGER):
         # Store the new measurement
@@ -1064,7 +1062,7 @@ x, w = solver(P=np.eye(3), x0=np.zeros(3), y=np.zeros((10, 1)))
         log("y", y)
 	\end{lstlisting}
 	
-	\item The obtained plots for $N = [10, 25]$ are shown in Figures \ref{fig:assignment51_1} and \ref{fig:assignment51_2}.
+	\item The obtained plots for $N = [10, 25]$ are shown in figures \ref{fig:assignment51_1} and \ref{fig:assignment51_2}.
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.7\textwidth]{images/Assignment5_N=10_False.png}
@@ -1171,7 +1169,7 @@ The problem that you can pass to your SQP solver is described by \texttt{ToyProb
 	figure of the final solution. Add this plot in your report. Does your solution look plausible?
 \end{assignment}
 \begin{flushleft}
-	The obtained plot of the evolution of the states Figure \ref{fig:assignment6_2} of the nonlinear system, appears plausible. 
+	The obtained plot of the evolution of the states figure \ref{fig:assignment6_2} of the nonlinear system, appears plausible. 
 	The state trajectories are consistent with the expectations for a nonlinear system subject to SQP optimization. They evolve in a smooth and predictable manner, avoiding abrupt or erratic transitions.
 	Moreover, as iterations progress, the states and inputs demonstrate convergence. Additionally, the first state aligns with the provided initial condition.
 \end{flushleft}
@@ -1196,7 +1194,7 @@ The problem that you can pass to your SQP solver is described by \texttt{ToyProb
 \end{assignment}
 \begin{flushleft}
 	Starting from an initial guess far from the solution, the Newton-Lagrange method struggles to find a descent direction that satisfies the necessary conditions for optimality.
-	Without using line search, the solver diverges in 9 iterations, the evolution of the states can be seen in Figure \ref{fig:assignment6_3}.
+	Without using line search, the solver diverges in 9 iterations, the evolution of the states can be seen in figure \ref{fig:assignment6_3}.
 	The initial guess is crucial for the solver to converge to a meaningful solution.
 \end{flushleft}
 \begin{lstlisting}[style=python]
