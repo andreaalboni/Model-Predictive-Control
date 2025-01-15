@@ -334,9 +334,65 @@ the session.
 
 	\textbf{Hint.} The notion of a support function might be of use.
 \end{assignment}
-
 \begin{flushleft}
-	pagine appunti 315-320.
+	Given $ X_f = \left\{ x \in \R^n \mid x^T P x \le \alpha \right\} $, pick $ P \in S^{n_x}_{+} $ and $\alpha > 0$
+	such that $ X_f $ is positive invariant for $ x^+ = A_k x $ and $ X_f \subseteq X_k $.
+	We will pick $ P = P_f $: $ x_f = \left\{ x \in \R^{n_x} \mid V_f(x) \le \alpha \right\} $ since $ V_f $ is a Lyapunov function: $V(x^+) \le V_f(x) - \alpha(\| x \|) $.
+	Now we should find the largest $\alpha$ such that $ X_f $ is as large as possible but still within $ X_k $, $ X_f \subseteq X_k $.
+	\[
+	\begin{aligned}
+		X_k &= \left\{ x \in X \mid K_x \in U \right\} \\
+			&= \left\{ x \in R^{n_x} \mid H_x x \le h_x, H_u K x \le h_u \right\} \\
+			&= \left\{ x \in R^{n_x} \mid \begin{bmatrix}
+				H_x \\
+				H_u K 
+			\end{bmatrix} x \le
+			\begin{bmatrix}
+				h_x \\
+				h_u
+			\end{bmatrix} \right\}
+	\end{aligned} 
+	\]
+	Our objective is therefore to find the largest $\alpha$:
+	\[ 
+	\begin{aligned}
+		\alpha &= \max \left\{ \alpha \mid X_f(\alpha) \subseteq X_k \right\} \\
+			&= \max \left\{ h_i^T x \le g_i \mid x \in X_f(\alpha) \right\}
+	\end{aligned}
+	\]
+	which, recalling that $ X_f(\alpha) \subseteq X_k = \left\{ x \mid h_i^T x \le g_i, \quad i = 1, \dots, m \right\} $ and implementing the support function $ \sigma_{X_f(\alpha)}(h_i) \le g_i$, can be written as:
+	\[ 
+		\max \left\{ h_i^T x \mid x^T P x \le \alpha \right\}
+	\]
+	Therefore, the lagrange function is:
+	\[ 
+	\begin{aligned}
+		\mathcal{L}(x, \mu) &= - h_i^T x + \mu g(x)
+							&= - h_i^T x + \mu (x^T P x - \alpha)
+	\end{aligned}
+	\]
+	Setting the gradient to zero, we obtain:
+	\[ 
+		\frac{\partial \mathcal{L}(x, \mu)}{\partial x} = - h_i + 2 \mu P x = 0 \implies x(\mu) = \frac{1}{2 \mu} P^{-1} h_i 
+	\]
+	Substituting $ x(\mu) $ back into the lagrange function, we obtain the dual function:
+	\[
+	\begin{aligned}
+		q(\mu) = \mathcal{L}(x(\mu), \mu) &= - \frac{1}{2 \mu} h_i^T P^{-1} h_i - \mu \Bigg( \frac{1}{(2 \mu)^2} h_i^T P^{-1} P P^{-1} h_i - \alpha \Bigg) \\
+			&= - \frac{1}{2 \mu} h_i^T P^{-1} h_i + \frac{1}{4 \mu} h_i^T P^{-1} h_i - \mu \alpha \\
+			&= - \frac{1}{4 \mu} h_i^T P^{-1} h_i - \mu \alpha
+	\end{aligned}
+	\]	
+	Solving the dual problem leads to:
+	\[
+		\dot{q}(\mu) = \frac{1}{4 \mu^2} h_i^T P^{-1} h_i - \alpha = 0 \implies \mu^* = \sqrt{\frac{1}{4 \alpha} h_i^T P^{-1} h_i}
+	\]
+	Finally the largest value of $\alpha$ can be obtained by solving:
+	\[ 
+		\max \left\{ \alpha \mid \sqrt{ \alpha h_i^T P^{-1} h_i } \le g_i, \quad i = 1, \dots, m\right\}
+	\]
+	which gives: 
+	\[ \alpha = \min \left\{ \frac{g_i}{h_i^T P^{-1} h_i}, \quad i = 1, \dots, m \right\} \]
 \end{flushleft}
 
 
@@ -810,7 +866,7 @@ The euclidean norm squared is a convex function, the negative of a convex functi
 	(see the solution of the exercise session for some example code. You can use the argument \texttt{obstacle\_positions} to visualize the obstacle.)
 \end{assignment}
 \begin{flushleft}
-	As can be seen in Figure \ref{fig:assignment4_4}, using the default values for $Q$, $R$, and $N$, the vehicle is not fully parked within the parking spot.
+	As can be seen in Figure \ref{fig:assignment4_4}, using the default values for $Q$, $R$, and $N$, the trajectory is collision-free but the vehicle is not fully parked within the parking spot.
 \end{flushleft}
 \begin{figure}[H]
     \centering
@@ -829,11 +885,7 @@ The euclidean norm squared is a convex function, the negative of a convex functi
 	and illustrate the final result with a plot of the trajectory.
 \end{assignment}
 \begin{flushleft}
-	nc -> cambia quanto la macchina passa vicino a quella parcheggiata. più cerchi, più la macchina si avvicina siccome migliore è l'approssimazione della macchina da parte dei cerchi.
-	
-	N -> più N è grande, più la macchina si avvicina alla posizione desiderata (centro del parcheggio, (0,0)), ma maggiore è il computational cost e time.
-
-	Q -> cambiare i primi due elementi sulla diagonale di Q aiuta, stiamo aumentando il costo legato alla posizione in x e in y, quindi la macchina tenderà a muoversi in quelle direzioni. Anche cambiare il terzo (relativo allo yaw) può aiutare.
+	These parameters and how they affect the behavior of the car have been thought through, and then some experiments have been performed to see how they work in practice. Here's the results:
 \end{flushleft}
 \begin{itemize}
     \item $n_c$: This parameter affects how closely the car passes by the parked car. Increasing the number of circles improves the approximation of the car by the circles, allowing the car to pass closer to the parked car.
@@ -841,7 +893,23 @@ The euclidean norm squared is a convex function, the negative of a convex functi
     \item $N$: A larger prediction horizon $N$ allows the car to get closer to the desired position (the center of the parking spot $(0,0)$). However, this also increases the computational cost and time.
 
     \item $Q$: Modifying the first two elements on the diagonal of $Q$ helps by increasing the cost associated with the position in $x$ and $y$. Consequently, the car will tend to improve along those directions. Additionally, changing the third element (related to the $yaw$) can also be beneficial.
+    
+	\item $Q_N$: Modifying its elements leads to a greater penalization of the final position of the car additionally pushing the car to reach the origin.
 \end{itemize}
+Given the observations, the following parameters were changed from the provided defaults and the final tuning is shown in the code below. Using these values, the final position reached by the car is $[x, y, \text{yaw}, \text{vel}] = [-2.68\exp-06, -3.65\exp-04, -1.28\exp-03, -6.91\exp-07]$.
+The final parking trajectory is illustrated in Figure \ref{fig:assignment4_5}.
+\begin{lstlisting}
+Q = cs.diagcat(5, 30, 0.05, 0.01)
+R = cs.diagcat(0.5, 0.007)
+Q_add = cs.diagcat(0, 15, 10, 0)
+Q_N = 5 * Q + Q_add
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/Assignment_45.png}
+    \caption{Parking trajectory using custom parameters}
+    \label{fig:assignment4_5}
+\end{figure}
 
 
 
@@ -882,6 +950,26 @@ def __call__(self, y, log) -> np.ndarray:
 	Report your final tuning (any value that you changed from the provided defaults)
 	and show the timings and state trajectory of the final controller.
 \end{assignment}
+\begin{flushleft}
+	I assumed real-time execution to be any solver time below 75\% of the sampling time $t_s$ (i.e. $0.75 t_s$), this has been implemented in code as can be seen below. 
+	To achieve this, I adjusted, from the previously custom parameters, the prediction horizon length $N$ to 8, which reduced the solver time to 0.5 seconds, comfortably meeting the real-time requirement ( $0.5 < 0.6 = 0.75 t_s$ ).
+	Below, in Figure \ref{fig:assignment4_6} the car's trajectory with this tuning applied can be seen.
+\end{flushleft}
+\begin{lstlisting}[style=python]
+if np.max(log.solver_time) > 0.75 * ts:
+	print(f"Solver time: {np.max(log.solver_time):.2f} s")
+	print("Not real time execution")
+else:
+	print(f"Solver time: {np.max(log.solver_time):.2f} s")
+	print("Real time execution")
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/Assignment_46.png}
+    \caption{Parking trajectory using custom parameters and real-time execution}
+    \label{fig:assignment4_6}
+\end{figure}
+
 
 
 \newpage

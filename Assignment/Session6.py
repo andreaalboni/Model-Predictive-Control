@@ -52,22 +52,22 @@ def lqr_solve_step(
     
     dx = np.zeros((prob.N+1, prob.ns))  
     du = np.zeros((prob.N, prob.nu))      
-    p = np.zeros_like(dx)
+    p = np.zeros((prob.N+1, prob.ns))
     dx[0] = 0 
     
     for k in range(prob.N):
-        Kk = fac.K[k]
-        sk1 = fac.s[k+1]
-        Pk1 = fac.P[k+1]
-        ek = fac.e[k]
+        Kk = fac.K[k] # 1x3
+        sk1 = fac.s[k+1] # 3x1
+        Pk1 = fac.P[k+1] # 3x3
+        ek = fac.e[k] # 1x1
     
-        Ak = np.array(nl.Ak[k])
-        Bk = np.array(nl.Bk[k])
-        ck = np.array(nl.ck[k].flatten())
+        Ak = np.array(nl.Ak[k]) # 3x3
+        Bk = np.array(nl.Bk[k]) # 3x1 
+        ck = np.array(nl.ck[k]).flatten()  # 3x
 
-        du[k] = ((Kk @ dx[k]).reshape(-1,1) + ek).flatten()
-        dx[k+1] = Ak @ dx[k] + Bk @ du[k] + ck
-        p[k+1] = np.array(Pk1 @ dx[k+1] + sk1).flatten()
+        du[k] = Kk @ dx[k] + ek  # 1x1
+        dx[k+1] = Ak @ dx[k] + Bk @ du[k] + ck  # 3x1
+        p[k+1] = np.array(Pk1 @ dx[k+1] + sk1).flatten()  # 3x1
 
     #End TODO -----------------------------------------------------------
     return problem.NewtonLagrangeUpdate(dx, du, p)
@@ -246,6 +246,7 @@ def test_linear_system():
 
     logger = problem.Logger(p, initial_guess)
     result = newton_lagrange(p, initial_guess, log_callback=logger)
+    print(result.exit_message)
     assert result.success, "Newton Lagrange did not converge on a linear system! Something is wrong!"
     assert result.n_its < 2, "Newton Lagrange took more than 2 iterations!"
 
@@ -328,7 +329,7 @@ def exercise56(regularize:bool):
     #End TODO -----------------------------------------------------------
 
     logger = problem.Logger(park_prob, initial_guess)
-    cfg = problem.NewtonLagrangeCfg(linesearch=True, max_iter=70, regularize=regularize)
+    cfg = problem.NewtonLagrangeCfg(linesearch=True, max_iter=50, regularize=regularize)
     final_iterate = newton_lagrange(park_prob, initial_guess, log_callback=logger, cfg=cfg)
     print(final_iterate.exit_message)
 

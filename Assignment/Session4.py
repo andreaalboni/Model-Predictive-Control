@@ -311,14 +311,16 @@ def go(N, Q=cs.diagcat(1, 3, 0.1, 0.01), R=cs.diagcat(1, 0.01), Q_N=5*cs.diagcat
     # Plot the parked car
     parkedcar_state = np.array([[0.25, 0., 0., 0.] for _ in range(101)])
     plot_state_trajectory(parkedcar_state, color="gray", label="Parked car")
-    #filename = f"Assignment_44.png"
-    #plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
+    filename = f"Model Predictive Control - Assignment/images/Assignment_46.png"
+    plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
     plt.show()
 
     # According to chatgpt to be considered real time execution, the solver time should be less than 0.75 * ts 
     if np.max(log.solver_time) > 0.75 * ts:
         print(f"Solver time: {np.max(log.solver_time):.2f} s")
+        print("Not real time execution")
     else:
+        print(f"Solver time: {np.max(log.solver_time):.2f} s")
         print("Real time execution")
     # Plot solver times and horizontal line
     plt.figure()
@@ -328,6 +330,8 @@ def go(N, Q=cs.diagcat(1, 3, 0.1, 0.01), R=cs.diagcat(1, 0.01), Q_N=5*cs.diagcat
     plt.ylabel("Solver Time [s]")
     plt.title("Solver Time per Time Step")
     plt.legend()
+    filename = f"Model Predictive Control - Assignment/images/Assignment_46_realtime.png"
+    plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
     plt.show()
 
     print(f"---Plot trajectory under the predictions")
@@ -378,7 +382,7 @@ def Assignment45():
 
 def Assignment46():
     #Assignment44()
-    N = 9
+    N = 8
     Q = cs.diagcat(5, 30, 0.05, 0.01)
     R = cs.diagcat(0.5, 0.007)
     Q_add = cs.diagcat(0, 15, 10, 0)
@@ -388,7 +392,7 @@ def Assignment46():
 def main():
     #Assignment41()
     #Assignment42()    
-    Assignment44()
+    #Assignment44()
     #Assignment45()
     Assignment46()
 
