@@ -53,18 +53,18 @@ def lqr_solve_step(
     dx = np.zeros((prob.N+1, prob.ns))  
     du = np.zeros((prob.N, prob.nu))      
     p = np.zeros((prob.N+1, prob.ns))
-    dx[0] = np.array([0])
+    dx[0] = 0
     
     for k in range(prob.N):
         Kk = fac.K[k] # 1x3
         sk1 = fac.s[k+1] # 3x1
         Pk1 = fac.P[k+1] # 3x3
-        ek = fac.e[k] # 1x1
+        ek = fac.e[k].flatten() # 1x1
     
         Ak = nl.Ak[k] # 3x3
         Bk = nl.Bk[k] # 3x1 
         ck = nl.ck[k].flatten()  # 3x
-
+        
         du[k] = Kk @ dx[k] + ek  # 1x1
         dx[k+1] = Ak @ dx[k] + Bk @ du[k] + ck  # 3x1
         p[k+1] = np.array(Pk1 @ dx[k+1] + sk1).flatten()  # 3x1
@@ -304,7 +304,7 @@ def exercise34(linesearch:bool):
     else:
         animate.animate_iterates(logger.iterates, os.path.join(WORKING_DIR, "Assignment6-4"))
 
-def exercise56(regularize:bool):
+def exercise56(regularize:bool, max_iter=50):
     from rcracers.simulator.core import simulate
     f = problem.KinematicBicycle()
     
@@ -329,19 +329,20 @@ def exercise56(regularize:bool):
     #End TODO -----------------------------------------------------------
 
     logger = problem.Logger(park_prob, initial_guess)
-    cfg = problem.NewtonLagrangeCfg(linesearch=True, max_iter=50, regularize=regularize)
+    cfg = problem.NewtonLagrangeCfg(linesearch=True, max_iter=max_iter, regularize=regularize)
     final_iterate = newton_lagrange(park_prob, initial_guess, log_callback=logger, cfg=cfg)
     print(final_iterate.exit_message)
 
     from given.homework import animate
-    animate.animate_iterates(logger.iterates, os.path.join(WORKING_DIR, f"Assignment6-5-reg{regularize}"))
-    animate.animate_positions(logger.iterates, os.path.join(WORKING_DIR, f"parking_regularize-{regularize}"))
+    animate.animate_iterates(logger.iterates, os.path.join(WORKING_DIR, f"Assignment65-reg{regularize}-maxiter{max_iter}"))
+    animate.animate_positions(logger.iterates, os.path.join(WORKING_DIR, f"parking_regularize-{regularize}-maxiter{max_iter}"))
 
 
 if __name__ == "__main__":
     test_linear_system()
-    #exercise2()
-    #exercise34(False)
-    #exercise34(True)
-    #exercise56(False)
-    #exercise56(True)
+    exercise2()
+    exercise34(False)
+    exercise34(True)
+    exercise56(False)
+    exercise56(True)
+    exercise56(True, max_iter=70)

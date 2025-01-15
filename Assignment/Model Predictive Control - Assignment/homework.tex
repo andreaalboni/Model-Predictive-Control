@@ -1135,13 +1135,14 @@ for multiple shooting (i.e., simultaneous approach).
 	a linear system. Is the output what you expect? Why?
 \end{assignment}
 \begin{flushleft}
-	Expected convergence in 2 iterations, as the system is linear.
-	Not sure about the values of $J_N$ and $||h||_2$ though.
+	Expected convergence in 1 iteration as the system is linear, but reached in 2 iterations. 
 \end{flushleft}
 \begin{lstlisting}[style=python]
 	it.    0 | JN = 1.51e+04 | ||h||2 = 1.25e-13
 	it.    1 | JN = 1.51e+04 | ||h||2 = 1.07e-13
+	Converged
 \end{lstlisting}
+
 
 
 \subsection{Nonlinear test case}
@@ -1175,6 +1176,7 @@ The problem that you can pass to your SQP solver is described by \texttt{ToyProb
 	\caption{Final solution of the nonlinear test case - Initial guess of all zeros.}
 	\label{fig:assignment6_2}
 \end{figure}
+
 
 
 \begin{assignment} \label{assgn:simulate-init}
@@ -1230,8 +1232,16 @@ The problem that you can pass to your SQP solver is described by \texttt{ToyProb
 	
 	\textbf{Hint. } During the Newton-Lagrange iterations, check whether the Hessian of the QP cost is positive definite.
 \end{assignment}
-
-
+\begin{flushleft}
+	The solver does not converge because the Hessian of the cost is not positive definite. This is proven by a check performed in the code which will print in yellow "Warning: Qk is not positive definite!".
+	Figure \ref{fig:assignment64-parking} shows the trajectory of the car, it is obvius that the orgin, parking spot, is not reached.
+\end{flushleft}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{images/parking_regularize-False-maxiter50.pdf}
+	\caption{Final solution of the parking case without using regularization.}
+	\label{fig:assignment64-parking}
+\end{figure}
 
 \subsection{Adding Regularization}
 
@@ -1245,6 +1255,21 @@ The problem that you can pass to your SQP solver is described by \texttt{ToyProb
 	With this modification, run the method again on the Parking problem. Does it converge? 
 	\textbf{Hint.}  Make sure to set \texttt{cfg.regularize} to \texttt{True}!
 \end{assignment}
+\begin{flushleft}
+	With the regularization implemented, the solver converges in 57 iterations. The final solution is shown in Figure \ref{fig:assignment65-states} and the trajectory followed by the car to reach the parking spot is shown in \ref{fig:assignment65-parking}.
+\end{flushleft}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{images/Assignment65-regTrue-maxiter70.pdf}
+	\caption{Final solution of the parking case using regularization.}
+	\label{fig:assignment65-states}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{images/parking_regularize-True-maxiter70.pdf}
+	\caption{Final solution of the parking case using regularization.}
+	\label{fig:assignment65-parking}
+\end{figure}
 
 
  
