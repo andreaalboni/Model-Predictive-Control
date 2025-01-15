@@ -1026,23 +1026,60 @@ x, w = solver(P=np.eye(3), x0=np.zeros(3), y=np.zeros((10, 1)))
         )
 	\end{lstlisting}
 	
-	\item Alter
+	\item The \texttt{MHE} has been modified in the following way to implement internally an \texttt{EKF} that to produce $\hat{x}_{T-N}$, and $P^-_{T-N}$, uses only the measurements available before time $T-N$. 
+	The number of past estimates to store should be equal to the horizon length, $N$.
+	\begin{lstlisting}[style=python]
+		def __call__(self, y: np.ndarray, log: LOGGER):
+        # Store the new measurement
+        self.y.append(y)
+        if len(self.y) > self.horizon:
+            self.y.pop(0)
+
+        # Update EKF with the new measurement
+        for y in self.y:
+            self.ekf(y)
+
+        # Store past estimates of x and P
+        self.x_past.append(self.ekf.x.copy())
+        self.P_past.append(self.ekf.P.copy())
+        if len(self.x_past) > self.horizon:
+            self.x_past.pop(0)
+            self.P_past.pop(0)
+
+        # Use EKF state as initial guess for MHE
+        if len(self.y) < self.horizon:
+            solver = self.build(len(self.y))
+            initial_state = self.x_past[0]
+            P = self.P_past[0]
+        else:
+            solver = self.solver
+            initial_state = self.x_past[-self.horizon]
+            P = self.P_past[-self.horizon]
+
+        # Update MHE
+        x, _ = solver(P, initial_state, self.y)
+
+        # update log
+        log("x", x[-1, :])
+        log("y", y)
+	\end{lstlisting}
 	
-	\item Plots:
+	\item The obtained plots for $N = [10, 25]$ are shown in Figures \ref{fig:assignment51_1} and \ref{fig:assignment51_2}.
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.7\textwidth]{images/Assignment5_N=10_False.png}
 		\caption{States and their estimation evolution - N = 10}
-		\label{fig:assignment51_2}
+		\label{fig:assignment51_1}
 	\end{figure}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.7\textwidth]{images/Assignment5_N=25_False.png}
 		\caption{States and their estimation evolution - N = 25}
-		\label{fig:assignment51_1}
+		\label{fig:assignment51_2}
 	\end{figure}
 	
-	\item Clipping the state estimates in the \emph{EKF} can aid the performance. Plots:
+	\item Clipping the state estimates in the \texttt{EKF} aids the performance making sure that non positive actions are avoided. 
+	Figures \ref{fig:assignment52_1} and \ref{fig:assignment52_2} show the state evolution for both the horizon lenghts with clipping.
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.7\textwidth]{images/Assignment5_N=10_True.png}
@@ -1052,7 +1089,7 @@ x, w = solver(P=np.eye(3), x0=np.zeros(3), y=np.zeros((10, 1)))
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.7\textwidth]{images/Assignment5_N=25_True.png}
-		\caption{States and their estimation evolution - N = 10 + Clipping}
+		\caption{States and their estimation evolution - N = 25 + Clipping}
 		\label{fig:assignment52_2}
 	\end{figure}
 \end{enumerate}

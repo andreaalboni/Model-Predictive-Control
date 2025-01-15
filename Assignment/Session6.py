@@ -53,7 +53,7 @@ def lqr_solve_step(
     dx = np.zeros((prob.N+1, prob.ns))  
     du = np.zeros((prob.N, prob.nu))      
     p = np.zeros((prob.N+1, prob.ns))
-    dx[0] = 0 
+    dx[0] = np.array([0])
     
     for k in range(prob.N):
         Kk = fac.K[k] # 1x3
@@ -61,9 +61,9 @@ def lqr_solve_step(
         Pk1 = fac.P[k+1] # 3x3
         ek = fac.e[k] # 1x1
     
-        Ak = np.array(nl.Ak[k]) # 3x3
-        Bk = np.array(nl.Bk[k]) # 3x1 
-        ck = np.array(nl.ck[k]).flatten()  # 3x
+        Ak = nl.Ak[k] # 3x3
+        Bk = nl.Bk[k] # 3x1 
+        ck = nl.ck[k].flatten()  # 3x
 
         du[k] = Kk @ dx[k] + ek  # 1x1
         dx[k+1] = Ak @ dx[k] + Bk @ du[k] + ck  # 3x1

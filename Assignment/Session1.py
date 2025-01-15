@@ -220,7 +220,7 @@ def Assignment12():
 
 def main():
     Assignment11()
-    #Assignment12()
+    Assignment12()
 
 if __name__ == "__main__": 
     main()

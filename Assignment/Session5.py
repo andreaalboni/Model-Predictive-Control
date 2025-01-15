@@ -92,9 +92,12 @@ class MHE:
 
         self.y = []
         self.solver = self.build(horizon)
-
+        # Store past values 
+        self.x_past = []
+        self.P_past = []
         # Initialize EKF
         self.ekf = EKF(f=self.f, h=self.h, x0=ekf_initial_state, clipping=ekf_clipping)
+
 
     @property
     def nx(self):
@@ -118,24 +121,32 @@ class MHE:
         )
 
     def __call__(self, y: np.ndarray, log: LOGGER):
-        # store the new measurement
+        # Store the new measurement
         self.y.append(y)
         if len(self.y) > self.horizon:
             self.y.pop(0)
 
-        # get solver and bounds
-        solver = self.solver
-        if len(self.y) < self.horizon:
-            solver = self.build(len(self.y))
+        # Update EKF with the new measurement
+        for y in self.y:
+            self.ekf(y)
 
-        # Update EKF with all measurements up to the current time step
-        for measurement in self.y:
-            self.ekf(measurement)
+        # Store past estimates of x and P
+        self.x_past.append(self.ekf.x.copy())
+        self.P_past.append(self.ekf.P.copy())
+        if len(self.x_past) > self.horizon:
+            self.x_past.pop(0)
+            self.P_past.pop(0)
 
         # Use EKF state as initial guess for MHE
-        initial_state = self.ekf.x
-        P = self.ekf.P
-        
+        if len(self.y) < self.horizon:
+            solver = self.build(len(self.y))
+            initial_state = self.x_past[0]
+            P = self.P_past[0]
+        else:
+            solver = self.solver
+            initial_state = self.x_past[-self.horizon]
+            P = self.P_past[-self.horizon]
+
         # Update MHE
         x, _ = solver(P, initial_state, self.y)
 
@@ -175,7 +186,7 @@ def show_result(t: np.ndarray, x: np.ndarray, x_: np.ndarray, N: int, clipping: 
     )
     ax.spines.right.set_visible(False)
     ax.spines.top.set_visible(False)
-    filename = f"Assignment5_N={N}_{clipping}.png"
+    filename = f"Model Predictive Control - Assignment/images/Assignment5_N={N}_{clipping}.png"
     plt.savefig(filename, dpi=700, format='png', bbox_inches='tight')
     plt.show()
 
