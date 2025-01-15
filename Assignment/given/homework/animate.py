@@ -49,6 +49,8 @@ def animate_iterates(its: List[NLIterate], filename: str = "Iterates.gif"):
     ani.save(out_path, fps=12)
     # plt.show()
     draw_frame(len(its)-1)
+    # ax.set_ylim([-1000,1000]) # Assignment 6.2
+    # ax.set_xlim([-10, 20]) # Assignment 6.3
     out_path = _prepare_output_path(filename, "pdf")
     fig.savefig(out_path)
     plt.show()

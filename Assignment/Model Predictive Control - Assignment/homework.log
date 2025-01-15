@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.11)  15 JAN 2025 19:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.11)  15 JAN 2025 23:06
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1873,48 +1873,52 @@ Package pdftex.def Info: images/Assignment5_N=25_True.png  used on input line 10
 [24 <./images/Assignment5_N=25_True.png>]
 LaTeX Font Info:    Font shape `T1/pxr/b/n' in size <12> not available
 (Font)              Font shape `T1/pxr/bx/n' tried instead on input line 1120.
-<images/Assignment6-2.pdf, id=442, 462.52798pt x 346.89601pt>
-File: images/Assignment6-2.pdf Graphic file (type pdf)
-<use images/Assignment6-2.pdf>
-Package pdftex.def Info: images/Assignment6-2.pdf  used on input line 1175.
-(pdftex.def)             Requested size: 298.75264pt x 224.07703pt.
 
 
 [25]
-<images/Assignment6-3.pdf, id=454, 462.52798pt x 346.89601pt>
+<images/Assignment6-2.pdf, id=454, 462.52798pt x 346.89601pt>
+File: images/Assignment6-2.pdf Graphic file (type pdf)
+<use images/Assignment6-2.pdf>
+Package pdftex.def Info: images/Assignment6-2.pdf  used on input line 1180.
+(pdftex.def)             Requested size: 298.75264pt x 224.07703pt.
+LaTeX Font Info:    Trying to load font information for TS1+pcr on input line 1203.
+ (c:/texlive/2024/texmf-dist/tex/latex/psnfss/ts1pcr.fd
+File: ts1pcr.fd 2001/06/04 font definitions for TS1/pcr.
+)
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `pcr' (encoding: TS1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+<images/Assignment6-3.pdf, id=456, 462.52798pt x 346.89601pt>
 File: images/Assignment6-3.pdf Graphic file (type pdf)
 <use images/Assignment6-3.pdf>
-Package pdftex.def Info: images/Assignment6-3.pdf  used on input line 1194.
+Package pdftex.def Info: images/Assignment6-3.pdf  used on input line 1211.
 (pdftex.def)             Requested size: 298.75264pt x 224.07703pt.
 
 
-[26 <./images/Assignment6-2.pdf> <./images/Assignment6-3.pdf>]
-<images/Assignment6-4.pdf, id=529, 462.52798pt x 346.89601pt>
+[26 <./images/Assignment6-2.pdf>]
+<images/Assignment6-4.pdf, id=504, 462.52798pt x 346.89601pt>
 File: images/Assignment6-4.pdf Graphic file (type pdf)
 <use images/Assignment6-4.pdf>
-Package pdftex.def Info: images/Assignment6-4.pdf  used on input line 1221.
+Package pdftex.def Info: images/Assignment6-4.pdf  used on input line 1251.
 (pdftex.def)             Requested size: 298.75264pt x 224.07703pt.
-<images/parking_regularize-False-maxiter50.pdf, id=531, 462.52798pt x 346.89601pt>
+
+
+[27 <./images/Assignment6-3.pdf>]
+<images/parking_regularize-False-maxiter50.pdf, id=550, 462.52798pt x 346.89601pt>
 File: images/parking_regularize-False-maxiter50.pdf Graphic file (type pdf)
 <use images/parking_regularize-False-maxiter50.pdf>
-Package pdftex.def Info: images/parking_regularize-False-maxiter50.pdf  used on input line 1241.
+Package pdftex.def Info: images/parking_regularize-False-maxiter50.pdf  used on input line 1272.
 (pdftex.def)             Requested size: 298.75264pt x 224.07703pt.
 
 
-[27 <./images/Assignment6-4.pdf>]
-<images/Assignment65-regTrue-maxiter70.pdf, id=575, 462.52798pt x 346.89601pt>
-File: images/Assignment65-regTrue-maxiter70.pdf Graphic file (type pdf)
-<use images/Assignment65-regTrue-maxiter70.pdf>
-Package pdftex.def Info: images/Assignment65-regTrue-maxiter70.pdf  used on input line 1263.
-(pdftex.def)             Requested size: 298.75264pt x 224.07703pt.
-<images/parking_regularize-True-maxiter70.pdf, id=576, 462.52798pt x 346.89601pt>
+[28 <./images/Assignment6-4.pdf> <./images/parking_regularize-False-maxiter50.pdf>]
+<images/parking_regularize-True-maxiter70.pdf, id=615, 462.52798pt x 346.89601pt>
 File: images/parking_regularize-True-maxiter70.pdf Graphic file (type pdf)
 <use images/parking_regularize-True-maxiter70.pdf>
-Package pdftex.def Info: images/parking_regularize-True-maxiter70.pdf  used on input line 1269.
+Package pdftex.def Info: images/parking_regularize-True-maxiter70.pdf  used on input line 1304.
 (pdftex.def)             Requested size: 298.75264pt x 224.07703pt.
 
-
-[28 <./images/parking_regularize-False-maxiter50.pdf> <./images/Assignment65-regTrue-maxiter70.pdf>]
 
 [29 <./images/parking_regularize-True-maxiter70.pdf>] (./homework.aux)
  ***********
@@ -1925,18 +1929,18 @@ Package rerunfilecheck Info: File `homework.out' has not changed.
 (rerunfilecheck)             Checksum: 677584DC16FE6E70164ACD212DC95CB0;1599.
  ) 
 Here is how much of TeX's memory you used:
- 38135 strings out of 473362
- 726336 string characters out of 5725050
- 1377503 words of memory out of 5000000
- 59908 multiletter control sequences out of 15000+600000
- 632315 words of font info for 461 fonts, out of 8000000 for 9000
+ 38186 strings out of 473362
+ 726791 string characters out of 5725050
+ 1377376 words of memory out of 5000000
+ 59936 multiletter control sequences out of 15000+600000
+ 632627 words of font info for 462 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  99i,14n,107p,1083b,1582s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/pxex.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/pxsy.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/pxsyb.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpcxr.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpxmi.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpxr.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/pxfonts/rpxsc.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/txfonts/t1xbtt.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/courier/ucrro8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/texlive/2024/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on homework.pdf (29 pages, 6252169 bytes).
+Output written on homework.pdf (29 pages, 6245545 bytes).
 PDF statistics:
- 776 PDF objects out of 1000 (max. 8388607)
- 529 compressed objects within 6 object streams
- 222 named destinations out of 1000 (max. 500000)
- 125161 words of extra memory for PDF output out of 128383 (max. 10000000)
+ 765 PDF objects out of 1000 (max. 8388607)
+ 544 compressed objects within 6 object streams
+ 241 named destinations out of 1000 (max. 500000)
+ 125668 words of extra memory for PDF output out of 128383 (max. 10000000)
 

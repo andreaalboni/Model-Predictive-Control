@@ -1170,6 +1170,11 @@ The problem that you can pass to your SQP solver is described by \texttt{ToyProb
 	Use the provided \texttt{animate\_iterates} function to animate the states and inputs over the iterates and to export a 
 	figure of the final solution. Add this plot in your report. Does your solution look plausible?
 \end{assignment}
+\begin{flushleft}
+	The obtained plot of the evolution of the states Figure \ref{fig:assignment6_2} of the nonlinear system, appears plausible. 
+	The state trajectories are consistent with the expectations for a nonlinear system subject to SQP optimization. They evolve in a smooth and predictable manner, avoiding abrupt or erratic transitions.
+	Moreover, as iterations progress, the states and inputs demonstrate convergence. Additionally, the first state aligns with the provided initial condition.
+\end{flushleft}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{images/Assignment6-2.pdf}
@@ -1189,10 +1194,22 @@ The problem that you can pass to your SQP solver is described by \texttt{ToyProb
    Does it look like the solution you just obtained in the previous exercise? 
    Why is this important?
 \end{assignment}
+\begin{flushleft}
+	Starting from an initial guess far from the solution, the Newton-Lagrange method struggles to find a descent direction that satisfies the necessary conditions for optimality.
+	Without using line search, the solver diverges in 9 iterations, the evolution of the states can be seen in Figure \ref{fig:assignment6_3}.
+	The initial guess is crucial for the solver to converge to a meaningful solution.
+\end{flushleft}
+\begin{lstlisting}[style=python]
+	# Output - Last iteration
+
+	it.    8 | JN = 1.04e+06 | ||h||2 = 8.24e+04
+	Using Linesearch? False
+	Diverged
+\end{lstlisting}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{images/Assignment6-3.pdf}
-	\caption{Final solution of the nonlinear test case.}
+	\caption{Final solution of the nonlinear test case}
 	\label{fig:assignment6_3}
 \end{figure}
 
@@ -1216,6 +1233,19 @@ The problem that you can pass to your SQP solver is described by \texttt{ToyProb
    Do you notice any difference with respect to the solution in \cref{assgn:62}? 
    How do you explain this?
 \end{assignment}
+\begin{flushleft}
+	The evolution of the states might differ significantly between cases where the initial approximation is good, Assignment 6.2, versus bad, now.  
+	Line search plays a critical role in "guiding" the solver toward the a meaningful solution reducing the step size, added to the log of the solver, significantly to ensure feasibility. Thanks to it, the solver now converges in 79 iterations.
+	From the gif can be seen that the states deviate noticeably before settling into a plausible trajectory which resemble the one obtained in Assignment 6.2.
+	These unusual behaviors during early iterations are a conseguence of the correction required to compensate for the bad starting point.
+\end{flushleft}
+\begin{lstlisting}[style=python]
+	# Output - Last iteration
+
+	it.   78 | JN = 2.26e+02 | ||h||2 = 8.24e-10 | alpha = 1.00e+00
+	Using Linesearch? True
+	Converged
+\end{lstlisting}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{images/Assignment6-4.pdf}
@@ -1233,8 +1263,9 @@ The problem that you can pass to your SQP solver is described by \texttt{ToyProb
 	\textbf{Hint. } During the Newton-Lagrange iterations, check whether the Hessian of the QP cost is positive definite.
 \end{assignment}
 \begin{flushleft}
-	The solver does not converge because the Hessian of the cost is not positive definite. This is proven by a check performed in the code which will print in yellow "Warning: Qk is not positive definite!".
-	Figure \ref{fig:assignment64-parking} shows the trajectory of the car, it is obvius that the orgin, parking spot, is not reached.
+	The solver does not converge because the Hessian of the cost is not positive definite. 
+	This is proven by a check performed in the code which will print in yellow "Warning: Qk is not positive definite!" whenever this happens (frequently).
+	Figure \ref{fig:assignment64-parking} shows the trajectory of the car, it is clear that the orgin, parking spot, is not reached.
 \end{flushleft}
 \begin{figure}[H]
 	\centering
@@ -1256,14 +1287,18 @@ The problem that you can pass to your SQP solver is described by \texttt{ToyProb
 	\textbf{Hint.}  Make sure to set \texttt{cfg.regularize} to \texttt{True}!
 \end{assignment}
 \begin{flushleft}
-	With the regularization implemented, the solver converges in 57 iterations. The final solution is shown in Figure \ref{fig:assignment65-states} and the trajectory followed by the car to reach the parking spot is shown in \ref{fig:assignment65-parking}.
+	Implementing regularization, as shown by the code below, the solver converges in 57 iterations. 
+	The trajectory followed by the car to reach the parking spot is shown in \ref{fig:assignment65-parking}.
 \end{flushleft}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\textwidth]{images/Assignment65-regTrue-maxiter70.pdf}
-	\caption{Final solution of the parking case using regularization.}
-	\label{fig:assignment65-states}
-\end{figure}
+\begin{lstlisting}[style=python]
+	def regularize(qp: problem.NewtonLagrangeQP):
+		for _ in range(qp.Qk.shape[0]):
+			Q_bar = qp.Qk[_]
+			_lambda = 1e-6
+			while not is_posdef(Q_bar):
+				Q_bar += _lambda * np.eye(Q_bar.shape[0])
+				_lambda *= 2
+\end{lstlisting}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{images/parking_regularize-True-maxiter70.pdf}
