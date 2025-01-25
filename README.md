@@ -11,7 +11,7 @@ This project contains six python files, one per each of the six sessions of the 
 
 In each of these files, at the end, is present a 'main' function that runs the different points of each assignment. The code is written in Python 3.10.10.
 
-Additionally, two folders are present: the '.venv' folder to store the virtual environment used to run the code, the 'given' folder containing the given files for the assignment.
+Additionally, a requirements file and two folders are present: the '.venv' folder to store the virtual environment used to run the code ($ .venv\Scripts\activate), the 'given' folder containing the given files required for each assignment to execute.
 
 ## Author
 Andrea Alboni
